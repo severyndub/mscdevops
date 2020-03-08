@@ -7,7 +7,7 @@
     dns_servers: "{{ networking.dns }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   when: networking.vnet_cidr is defined
   tags:
@@ -21,7 +21,7 @@
     state: absent
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   when: networking.vnet_cidr is defined
   tags:

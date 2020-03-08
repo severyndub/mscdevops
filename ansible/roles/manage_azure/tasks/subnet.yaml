@@ -11,7 +11,7 @@
       resource_group: "{{ aks.nsg.rg }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   when: ( networking.subnet is defined )
   tags:
@@ -34,7 +34,7 @@
     state: absent
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   when: ( networking.subnet is defined )
   tags:

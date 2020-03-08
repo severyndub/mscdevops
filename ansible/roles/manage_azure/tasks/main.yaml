@@ -12,10 +12,10 @@
 - name: Include task for creating AKS
   include_tasks: "{{ item }}"
   with_items:
-    - "aks.yaml"
     - "resource_group.yaml"
-    - "subnet.yaml"
     - "vnet.yaml"
+    - "subnet.yaml"
+    - "aks.yaml"
   tags:
     - createrg
     - createaks

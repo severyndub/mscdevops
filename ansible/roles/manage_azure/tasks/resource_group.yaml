@@ -6,7 +6,7 @@
     tags: "{{ rg_tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
   tags:
@@ -19,7 +19,7 @@
     tags: "{{ rg_tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
   when: ( nsg is defined and nsg.rg is defined ) and ( networking.subnet is defined )
@@ -33,7 +33,7 @@
     tags: "{{ rg_tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
   when: replicated is defined and replicated == 'yes'
@@ -46,7 +46,7 @@
     state: absent
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant}}"
+    tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   tags:
     - deleterg
