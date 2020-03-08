@@ -42,23 +42,6 @@ vnet:
 nsg:
   rg: "{{ environmentPrefix }}-NSG-RG"
 
-  aks:
-  name: "{{ environmentPrefix }}-aks-cluster"
-  version: "1.13.10"
-  vnet: "{{ vnet.name }}"
-  rg: "{{ environmentPrefix }}-aks-rg"
-  subnet:
-    name: "{{ environmentPrefix }}-aks-sub"
-  nsg:
-    name: "{{ environmentPrefix }}-aks-nsg"
-    rg: "{{  nsg.rg | default(resourceGroupName) }}"
-  client:
-    id: "{{ az_aks_client_id }}"
-    secret: "{{ az_aks_secret }}"
-  node:
-    count: 2
-    size: "Standard_B2s"
-
 
     ###########################Docker constant variables################################
 
