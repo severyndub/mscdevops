@@ -32,7 +32,12 @@ aks:
     id: "{{ az_aks_client_id }}"
     secret: "{{ az_aks_secret }}"
   node:
+    count: 2
     size: "Standard_D8s_v3"
+
+vnet:
+  name: "{{ environmentPrefix }}-vnet"
+  rg: "{{ environmentPrefix }}-vnet-RG"
 
 nsg:
   rg: "{{ environmentPrefix }}-NSG-RG"
