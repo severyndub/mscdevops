@@ -1,0 +1,52 @@
+---
+- name: Create primary resource group
+  azure_rm_resourcegroup:
+    name: "{{ resourceGroupName }}"
+    location: "{{ location }}"
+    tags: "{{ rg_tags }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  run_once: "{{ run_mode_once | default(false) }}"
+  tags:
+    - createrg
+
+- name: Create NSG resource group
+  azure_rm_resourcegroup:
+    name: "{{ nsg.rg }}"
+    location: "{{ location }}"
+    tags: "{{ rg_tags }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  run_once: "{{ run_mode_once | default(false) }}"
+  when: ( nsg is defined and nsg.rg is defined ) and ( networking.subnet is defined )
+  tags:
+  - createrg
+
+- name: Create DR resource group
+  azure_rm_resourcegroup:
+    name: "{{ replica.resourceGroupName }}"
+    location: "{{ replica.location }}"
+    tags: "{{ rg_tags }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  run_once: "{{ run_mode_once | default(false) }}"
+  when: replicated is defined and replicated == 'yes'
+  tags:
+    - createrg
+
+- name: Delete a resource group
+  azure_rm_resourcegroup:
+    name: "{{ resourceGroupName }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  tags:
+    - deleterg

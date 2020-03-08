@@ -13,5 +13,6 @@
   include_tasks: "{{ item }}"
   with_items:
     - "aks.yaml"
+    - "resource_group.yaml"
   tags:
     - createaks
