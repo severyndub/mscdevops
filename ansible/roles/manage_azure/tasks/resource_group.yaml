@@ -8,7 +8,6 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
-  delegate_to: localhost
   run_once: "{{ run_mode_once | default(false) }}"
   tags:
     - createrg

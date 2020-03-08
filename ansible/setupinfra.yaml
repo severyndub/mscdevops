@@ -1,6 +1,7 @@
 - hosts: "{{ which_host | default('all') }}"
   remote_user: "{{ remoteUser | default('bcadmin') }}"
   gather_facts: no
+  delegate_to: localhost
   connection: local
   become: false
   vars:
