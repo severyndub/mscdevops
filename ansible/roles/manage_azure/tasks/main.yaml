@@ -14,5 +14,7 @@
   with_items:
     - "aks.yaml"
     - "resource_group.yaml"
+    - "subnet.yaml"
+    - "vnet.yaml"
   tags:
     - createaks
