@@ -17,4 +17,5 @@
     - "subnet.yaml"
     - "vnet.yaml"
   tags:
+    - createrg
     - createaks
