@@ -13,7 +13,7 @@ azureSubId: "131f79c1-67a0-4989-b698-a131af549e69"
 location: "westeurope"
 
 
-environmentPrefix: "mscdevops-{{ envType }}-{{ envn }}"
+environmentPrefix: "mscdevops-{{ envn }}"
 
 #dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
 dbUrl: "mongodb+srv://dbUser:{{ dbUser }}@{{ dbSrv }}.azure.mongodb.net/{{ dbName }}?retryWrites=true&connectTimeoutMS=600000"
