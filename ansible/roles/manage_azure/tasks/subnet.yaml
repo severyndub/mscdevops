@@ -1,0 +1,42 @@
+---
+
+- name: Create a subnet for AKS
+  azure_rm_subnet:
+    name: "{{ aks.subnet.name }}"
+    resource_group: "{{ vnet.rg }}"
+    virtual_network_name: "{{ vnet.name }}"
+    address_prefix_cidr: "{{ networking.subnet.aks }}"
+    security_group:
+      name: "{{ aks.nsg.name }}"
+      resource_group: "{{ aks.nsg.rg }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  when: ( networking.subnet is defined )
+  tags:
+    - createaks
+    - createrg
+
+- name: Add service endpoint to AKS subnet
+  shell: "az network vnet subnet update --subscription {{ azureSubId }} --resource-group {{ vnet.rg }} --name {{ aks.subnet.name }} --service-endpoints Microsoft.Sql --vnet-name {{ vnet.name }}"
+  when:  ( networking.subnet is defined )
+  tags:
+    - postdeployment
+
+# Delete subnets for AKS
+
+- name: Delete AKS subnet
+  azure_rm_subnet:
+    name: "{{ aks.subnet.name }}"
+    resource_group: "{{ vnet.rg }}"
+    virtual_network_name: "{{ vnet.name }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  when: ( networking.subnet is defined )
+  tags:
+    - deleteaks
+    - deleterg

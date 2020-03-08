@@ -1,0 +1,29 @@
+---
+- name: Create a virtual network
+  azure_rm_virtualnetwork:
+    name: "{{ vnet.name }}"
+    resource_group: "{{ vnet.rg }}"
+    address_prefixes_cidr: "{{ networking.vnet_cidr }}"
+    dns_servers: "{{ networking.dns }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  when: networking.vnet_cidr is defined
+  tags:
+    - createvnet
+    - createrg
+
+- name: Delete a virtual network
+  azure_rm_virtualnetwork:
+    name: "{{ vnet.name }}"
+    resource_group: "{{ vnet.rg }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant}}"
+    secret: "{{ az_secret }}"
+  when: networking.vnet_cidr is defined
+  tags:
+    - deletevnet
+    - deleterg
