@@ -18,6 +18,22 @@ environmentPrefix: "mscdevops-{{ envType }}-{{ envn }}"
 #dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
 dbUrl: "mongodb+srv://dbUser:{{ dbUser }}@{{ dbSrv }}.azure.mongodb.net/{{ dbName }}?retryWrites=true&connectTimeoutMS=600000"
 
+aks:
+  name: "{{ environmentPrefix }}-aks"
+  version: "1.13.12"
+  vnet: "{{ vnet.name }}"
+  rg: "{{ environmentPrefix }}-RG"
+  subnet:
+    name: "{{ environmentPrefix }}-aks-sub"
+  nsg:
+    name: "{{ environmentPrefix }}-aks-nsg"
+    rg: "{{  nsg.rg | default(resourceGroupName) }}"
+  client:
+    id: "{{ az_aks_client_id }}"
+    secret: "{{ az_aks_secret }}"
+  node:
+    size: "Standard_D8s_v3"
+
 nsg:
   rg: "{{ environmentPrefix }}-NSG-RG"
 
@@ -40,6 +56,8 @@ nsg:
 
 
     ###########################Docker constant variables################################
+
+
 dockerRegistry:  "mcsdevopsentarch.azurecr.io"
 dockerImage: "{{ dockerRegistry }}/mscdevopsca1/{{dockerImageName}}"
 dockerTag: "{{ dockerImageTagVar }}"

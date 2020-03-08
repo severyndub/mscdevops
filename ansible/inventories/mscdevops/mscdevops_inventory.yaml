@@ -1,7 +1,6 @@
 # author: Seweryn Malinowski
 
 services:
-  children:
     hosts:
       frontendservice:
         resourceGroupName: MSCDEVOPS-ENTARCH-CA1-FE

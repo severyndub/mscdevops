@@ -9,28 +9,9 @@
   tags:
     - always
 
-- name: Manage databases
-  include_tasks: "{{ item }}"
-  with_items:
-    - "database.yaml"
-  tags:
-    - createdb
-    - removedb
-
 - name: Include task for creating AKS
   include_tasks: "{{ item }}"
   with_items:
     - "aks.yaml"
   tags:
     - createaks
-
-- name: Include tasks for managing NSG roles
-  include_tasks: "{{ item }}"
-  with_items:
-  - "nsg.yaml"
-  tags:
-    - awxaccess
-    - manageonensg
-    - updateaksnsgrules
-    - removeaksnsg
-    - managesqlfirewall
