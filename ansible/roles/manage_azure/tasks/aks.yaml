@@ -1,0 +1,8 @@
+# author: Seweryn Malinowski
+---
+
+- name: Create AKS cluster
+  shell: "az aks create -n {{ aks.name }} -g {{ aks.rg | default(resourceGroupName) }} -k {{ aks.version }} --vnet-subnet-id /subscriptions/{{ azureSubId }}/resourceGroups/{{ vnet.rg }}/providers/Microsoft.Network/virtualNetworks/{{ vnet.name }}/subnets/{{ aks.subnet.name }} --disable-rbac --node-count {{ aks.node.count }} --node-vm-size {{ aks.node.size }} --network-plugin azure --service-principal {{ aks.client.id }} --client-secret {{ aks.client.secret }} --subscription {{ azureSubId }} --generate-ssh-keys"
+  when: ( aksOff is not defined or aksOff == "no" )
+  tags:
+    - createaks

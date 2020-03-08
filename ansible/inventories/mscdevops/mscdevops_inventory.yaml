@@ -1,0 +1,25 @@
+# author: Seweryn Malinowski
+
+services:
+  children:
+    hosts:
+      frontendservice:
+        resourceGroupName: MSCDEVOPS-ENTARCH-CA1-FE
+        nodeName: frontend
+        dockerImageName: frontendservice
+        aksOff: "no"
+      backendservice:
+        resourceGroupName: MSCDEVOPS-ENTARCH-CA1-BE
+        nodeName: backend
+        dockerImageName: backendservice
+        dbName: "{{ environmentPrefix }}-{{ nodeName }}-sqldb-offledger"
+        dbSrv:
+        dbUser: "bcadmin"
+    vars:
+      aksOff: "no"
+      networking:
+        vnet_cidr: "10.100.0.0/16"
+        subnet:
+          aks: "10.100.20.0/24"
+
+        

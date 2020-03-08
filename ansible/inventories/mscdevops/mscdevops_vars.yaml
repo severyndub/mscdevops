@@ -1,0 +1,46 @@
+# author: Seweryn Malinowski
+
+###########################Ansible vault variables mapping##########################
+# azure_cont_reg_pass - docker registry password
+# az_client_id - azure service principal client id
+# az_secret - azure service principal secret
+# az_tenant_id - azure tenant id
+# az_aks_client_id - aks service principal client id
+# az_aks_secret - aks service principal secret
+
+###########################Azure variables#########################################
+azureSubId: "131f79c1-67a0-4989-b698-a131af549e69"
+location: "westeurope"
+
+
+environmentPrefix: "mscdevops-{{ envType }}-{{ envn }}"
+
+#dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
+dbUrl: "mongodb+srv://dbUser:{{ dbUser }}@{{ dbSrv }}.azure.mongodb.net/{{ dbName }}?retryWrites=true&connectTimeoutMS=600000"
+
+nsg:
+  rg: "{{ environmentPrefix }}-NSG-RG"
+
+  aks:
+  name: "{{ environmentPrefix }}-aks-cluster"
+  version: "1.13.10"
+  vnet: "{{ vnet.name }}"
+  rg: "{{ environmentPrefix }}-aks-rg"
+  subnet:
+    name: "{{ environmentPrefix }}-aks-sub"
+  nsg:
+    name: "{{ environmentPrefix }}-aks-nsg"
+    rg: "{{  nsg.rg | default(resourceGroupName) }}"
+  client:
+    id: "{{ az_aks_client_id }}"
+    secret: "{{ az_aks_secret }}"
+  node:
+    count: 2
+    size: "Standard_B2s"
+
+
+    ###########################Docker constant variables################################
+dockerRegistry:  "mcsdevopsentarch.azurecr.io"
+dockerImage: "{{ dockerRegistry }}/mscdevopsca1/{{dockerImageName}}"
+dockerTag: "{{ dockerImageTagVar }}"
+dockerUser: mcsdevopsentarch

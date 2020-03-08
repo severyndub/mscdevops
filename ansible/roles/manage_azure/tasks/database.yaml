@@ -1,0 +1,149 @@
+---
+- name: Create SQL Server
+  azure_rm_sqlserver:
+    name: "{{ sqlServerName }}"
+    resource_group: "{{ sqlResourceGroupName | default(resourceGroupName) }}"
+    location: "{{ location }}"
+    admin_username: "{{ dbUser }}"
+    admin_password: "{{ dbPass }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  when: (tertiary is not defined or tertiary == "no") or (architecture == "saas")
+  run_once: "{{ run_mode_once | default(false) }}"
+  tags:
+    - createdb
+    - createrg
+
+- name: Create (or update) onledger SQL Databases
+  azure_rm_sqldatabase:
+    name: "{{ dbName }}"
+    resource_group: "{{ sqlResourceGroupName | default(resourceGroupName) }}"
+    server_name: "{{ sqlServerName }}"
+    edition: "{{ dbSo }}"
+    location: "{{ location }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  ignore_errors: yes
+  tags:
+    - createdb
+    - createrg
+
+- name: Create (or update) offledger SQL Databases
+  azure_rm_sqldatabase:
+    name: "{{ offledgerDbName }}"
+    resource_group: "{{ sqlResourceGroupName | default(resourceGroupName) }}"
+    server_name: "{{ sqlServerName }}"
+    edition: "{{ dbSo }}"
+    location: "{{ location }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  ignore_errors: yes
+  when: (isServicesNode is not defined or isServicesNode == "no") and ((tertiary is not defined or tertiary == "no") or (architecture == "saas"))
+  tags:
+    - createdb
+    - createrg
+
+- name: Create (or update) NMS SQL Database
+  azure_rm_sqldatabase:
+    name: "{{ networkMapDBname | default('nms-db') }}"
+    resource_group: "{{ sqlResourceGroupName | default(resourceGroupName) }}"
+    server_name: "{{ sqlServerName }}"
+    edition: standard
+    location: "{{ location }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  ignore_errors: yes
+  when: (isNMSnode is defined) and (isNMSnode == "yes")
+  tags:
+    - createdb
+    - createrg
+
+- name: Create replica SQL Server
+  azure_rm_sqlserver:
+    name: "{{ sqlServerName }}-dr"
+    resource_group: "{{ replica.resourceGroupName }}"
+    location: "{{ replica.location }}"
+    admin_username: "{{ dbUser }}"
+    admin_password: "{{ dbPass }}"
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  when: ( replicated is defined and replicated == "yes" ) and ( tertiary is not defined or tertiary == "no" )
+  tags:
+    - createdb
+    - createrg
+
+- name: Create database replica for offledger SQL Databases
+  shell: "az sql db replica create --subscription {{ azureSubId }} --resource-group {{ resourceGroupName }} --name {{ offledgerDbName }} --partner-server {{ sqlServerName }}-dr --server {{ sqlServerName }} --partner-resource-group {{ replica.resourceGroupName }} --zone-redundant {{ replica.zone }} --service-objective {{ replica.so }} --capacity {{ replica.sku }}"
+  when: ( replicated is defined and replicated == "yes" ) and ( tertiary is not defined or tertiary == "no" )
+  tags:
+    - createdb
+    - createrg
+
+- name: Create database replica for onledger SQL Databases
+  shell: "az sql db replica create --subscription {{ azureSubId }} --resource-group {{ resourceGroupName }} --name {{ dbName }} --partner-server {{ sqlServerName }}-dr --server {{ sqlServerName }} --partner-resource-group {{ replica.resourceGroupName }} --zone-redundant {{ replica.zone }} --service-objective {{ replica.so }} --capacity {{ replica.sku }}"
+  when: ( replicated is defined and replicated == "yes" ) and ( tertiary is not defined or tertiary == "no" )
+  tags:
+    - createdb
+    - createrg
+
+- name: Create database replica for tertiary onledger SQL Databases
+  shell: "az sql db replica create --subscription {{ azureSubId }} --resource-group {{ replica.primary.resourceGroupName }} --name {{ dbName }} --partner-server {{ sqlServerName }}-dr --server {{ sqlServerName }} --partner-resource-group {{ replica.resourceGroupName }} --zone-redundant {{ replica.zone }} --service-objective {{ replica.so }} --capacity {{ replica.sku }}"
+  when: ( replicated is defined and replicated == "yes" ) and ( tertiary is defined or tertiary == "yes" )
+  tags:
+    - createdb
+    - createrg
+
+# Removing DBs
+
+- name: Remove onledger SQL Databases
+  azure_rm_sqldatabase:
+    name: "{{ dbName }}"
+    resource_group: "{{ resourceGroupName }}"
+    server_name: "{{ sqlServerName }}"
+    state: absent
+  tags:
+    - removedb
+    - deleterg
+
+- name: Remove offledger SQL Databases
+  azure_rm_sqldatabase:
+    name: "{{ offledgerDbName }}"
+    resource_group: "{{ resourceGroupName }}"
+    server_name: "{{ sqlServerName }}"
+    state: absent
+  tags:
+    - removedb
+    - deleterg
+
+- name: Remove NMS SQL Database
+  azure_rm_sqldatabase:
+    name: "nms-db"
+    resource_group: "{{ resourceGroupName }}"
+    server_name: "{{ sqlServerName }}"
+    state: absent
+  tags:
+    - removedb
+    - deleterg
+
+- name: Remove SQL Server
+  azure_rm_sqlserver:
+    name: "{{ sqlServerName }}"
+    resource_group: "{{ resourceGroupName }}"
+    state: absent
+  tags:
+    - removesql
+    - deleterg
+  notify:
+    - Sleep
+
+

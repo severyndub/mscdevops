@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-e6a1-operatorui
+data:
+  # Adding new entries here will make them appear as files in the deployment.
+  #   # Please update k8s.io/k8s.io/README.md when you update this file
+  default.conf: |
+    server {
+    listen       80;
+    root         /usr/share/nginx/html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    }
+  nginx.conf: |
+    worker_processes  4;
+    events {
+      worker_connections  10240;
+    }
+    http {
+       include       /etc/nginx/mime.types;
+       access_log  /mnt/operator/ui/log/nginx/access.log;
+       error_log   /mnt/operator/ui/log/nginx/error.log;
+       include /etc/nginx/conf.d/*.conf;
+    }
