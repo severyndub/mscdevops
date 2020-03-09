@@ -14,7 +14,7 @@ location: "westeurope"
 
 
 environmentPrefix: "{{ env }}"
-rg_tags: "ca1"
+rg_tags: "{'env':'ca1'}"
 
 #dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
 dbUrl: "mongodb+srv://dbUser:{{ dbUser }}@{{ dbSrv }}.azure.mongodb.net/{{ dbName }}?retryWrites=true&connectTimeoutMS=600000"
