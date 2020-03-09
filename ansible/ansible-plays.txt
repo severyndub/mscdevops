@@ -1,6 +1,6 @@
 sudo ansible-playbook ansible/setupinfra.yaml --ask-vault-pass --inventory ansible/inventories/mscdevops/mscdevops_inventory.yaml --extra-vars "host_key_checking=False env=mscdevops location=westeurope ssh_port=22" --tags "createrg"
 
-
+ sudo ansible-playbook ansible/setupinfra.yaml --inventory ansible/inventories/mscdevops/mscdevops_inventory.yaml --extra-vars "host_key_checking=False env=mscdevops location=westeurope ssh_port=22" --vault-password-file /var/lib/jenkins/secrets/ansible_vault  --tags "createrg"
 
 
 ERROR:

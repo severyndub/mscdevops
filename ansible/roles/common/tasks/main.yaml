@@ -1,10 +1,10 @@
-# - name: Remove old docker
-#   yum:
-#     name: "{{ rmrpms }}"
-#     state: absent
-#   ignore_errors: yes
-#   tags:
-#     - upgradedocker
+---
+- name: Import common variables
+  include_vars: "{{ item }}.yaml"
+  with_items:
+    - packages
+  tags:
+    - always
 
 - name: Install pip packages
   pip:
