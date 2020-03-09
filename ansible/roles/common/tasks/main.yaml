@@ -1,0 +1,32 @@
+# - name: Remove old docker
+#   yum:
+#     name: "{{ rmrpms }}"
+#     state: absent
+#   ignore_errors: yes
+#   tags:
+#     - upgradedocker
+
+- name: Install pip packages
+  pip:
+    name: "{{ pips }}"
+    state: latest
+  ignore_errors: yes
+  delegate: localhost
+  tags:
+    - install
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  tags:
+      - always
+
+- name: Stop docker service
+  service:
+    name: docker
+    state: stopped
+    enabled: yes
+  tags:
+      - always

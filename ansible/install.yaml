@@ -1,0 +1,13 @@
+- hosts: "{{ which_host | default('all') }}"
+  remote_user: "{{ remoteUser | default('bcadmin') }}"
+  become: true
+  vars:
+    projectDir: ./../
+    inventoryDir: "inventories/{{env}}"
+    ansibleServerIP: "{{ ansibleIP | default('40.118.43.201') }}"
+    env: "{{ env }}"
+    ansible_ssh_port: "{{ ssh_port | default(22)}}"
+  vars_files:
+    - "{{ inventoryDir }}/{{ env }}_vault.yaml"
+  roles:
+    - role: common
