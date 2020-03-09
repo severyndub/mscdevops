@@ -9,8 +9,7 @@
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
-  tags:
-    - createrg
+  tags: createrg
 
 - name: Create NSG resource group
   azure_rm_resourcegroup:
@@ -23,13 +22,12 @@
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
   when: ( nsg is defined and nsg.rg is defined ) and ( networking.subnet is defined )
-  tags:
-  - createrg
+  tags: createrg
 
-- name: Create DR resource group
+- name: Create VNET resource group
   azure_rm_resourcegroup:
-    name: "{{ replica.resourceGroupName }}"
-    location: "{{ replica.location }}"
+    name: "{{ vnet.rg }}"
+    location: "{{ location }}"
     tags: "{{ rg_tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
@@ -37,16 +35,15 @@
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
   when: replicated is defined and replicated == 'yes'
-  tags:
-    - createrg
+  tags: createrg
 
-- name: Delete a resource group
-  azure_rm_resourcegroup:
-    name: "{{ resourceGroupName }}"
-    state: absent
-    subscription_id: "{{ azureSubId }}"
-    client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant_id}}"
-    secret: "{{ az_secret }}"
-  tags:
-    - deleterg
+# - name: Delete a resource group
+#   azure_rm_resourcegroup:
+#     name: "{{ resourceGroupName }}"
+#     state: absent
+#     subscription_id: "{{ azureSubId }}"
+#     client_id: "{{ az_client_id }}"
+#     tenant: "{{ az_tenant_id}}"
+#     secret: "{{ az_secret }}"
+#   tags:
+#     - deleterg
