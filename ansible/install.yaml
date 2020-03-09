@@ -1,9 +1,11 @@
 - hosts: "{{ which_host | default('all') }}"
   remote_user: "{{ remoteUser | default('bcadmin') }}"
-  become: true
+  gather_facts: no
+  connection: local
+  become: false
   vars:
     projectDir: ./../
-    inventoryDir: "inventories/{{env}}"
+    inventoryDir: "{{ playbook_dir }}/inventories/{{ env }}"
     ansibleServerIP: "{{ ansibleIP | default('40.118.43.201') }}"
     env: "{{ env }}"
     ansible_ssh_port: "{{ ssh_port | default(22)}}"
