@@ -17,6 +17,7 @@ services:
     vars:
       aksOff: "no"
       networking:
+        dns: "8.8.8.8"
         vnet_cidr: "10.100.0.0/16"
         subnet:
           aks: "10.100.20.0/24"
