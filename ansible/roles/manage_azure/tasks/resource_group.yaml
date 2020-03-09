@@ -34,7 +34,7 @@
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
-  when: replicated is defined and replicated == 'yes'
+  when: ( vnet is defined and vnet == 'yes' )
   tags: createrg
 
 # - name: Delete a resource group
