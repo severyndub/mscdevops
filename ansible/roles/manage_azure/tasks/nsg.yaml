@@ -1,0 +1,41 @@
+---
+- name: Create a nsg for AKS
+  azure_rm_securitygroup:
+    name: "{{ nsg.name }}"
+    resource_group: "{{ nsg.rg }}"
+    #purge_rules: yes
+      rules:
+        - name: DenySSH
+          protocol: Tcp
+          destination_port_range: 22
+          access: Deny
+          priority: 100
+          direction: Inbound
+        - name: 'AllowSSH'
+          protocol: Tcp
+          source_address_prefix:
+            - '77.252.197.165/24'
+            - '168.208.6.11/24'
+          destination_port_range: 22
+          access: Allow
+          priority: 101
+          direction: Inbound
+        - name: 'AllowMultiplePorts'
+          protocol: Tcp
+          source_address_prefix:
+            - '77.252.197.165/24'
+            - '168.208.6.11/24'
+          destination_port_range:
+            - 80
+            - 443
+          access: Allow
+          priority: 102
+
+# Delete security group
+- name: Delete nsg 
+- azure_rm_securitygroup:
+      resource_group: "{{ nsg.rg }}"
+      name: "{{ nsg.name }}"
+      state: absent
+  tags:
+    delete: deleteNsg

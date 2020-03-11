@@ -23,7 +23,7 @@ aks:
   name: "{{ environmentPrefix }}-aks"
   version: "1.13.12"
   vnet: "{{ vnet.name }}"
-  rg: "{{ environmentPrefix }}-RG"
+  rg: "{{ environmentPrefix }}-aks-rg"
   subnet:
     name: "{{ environmentPrefix }}-aks-sub"
   nsg:
@@ -38,15 +38,19 @@ aks:
 
 vnet:
   name: "{{ environmentPrefix }}-vnet"
-  rg: "{{ environmentPrefix }}-vnet-RG"
+  rg: "{{ environmentPrefix }}-vnet-rg"
 
 nsg:
-  rg: "{{ environmentPrefix }}-NSG-RG"
+  name: "{{ environmentPrefix }}-nsg"
+  rg: "{{ environmentPrefix }}-nsg-rg"
 
+networking:
+  dns: "8.8.8.8"
+  vnet_cidr: "10.110.0.0/16"
+  subnet:
+    aks: "10.110.10.0/24"
 
-    ###########################Docker constant variables################################
-
-
+###########################Docker constant variables################################
 dockerRegistry:  "mcsdevopsentarch.azurecr.io"
 dockerImage: "{{ dockerRegistry }}/mscdevopsca1/{{dockerImageName}}"
 dockerTag: "{{ dockerImageTagVar }}"

@@ -9,13 +9,51 @@
   tags:
     - always
 
-- name: Include task for creating AKS
+- name: Include task for creating resource groups
   include_tasks: "{{ item }}"
   with_items:
     - "resource_group.yaml"
+  tags: 
+    - createRg
+
+- name: Include tasks for creating vnets
+  include_tasks: "{{ item }}"
+  with_items:
     - "vnet.yaml"
+  tags:
+    - createVnet
+
+- name: Include tasks for creating nsg
+  include_tasks: "{{ item }}"
+  with_items:
+    - "nsg.yaml"
+  tags:
+    - createNsg
+
+- name: Include tasks for creating subnets
+  include_tasks: "{{ item }}"
+  with_items:
     - "subnet.yaml"
+  tags:
+    - createSubnet
+
+- name: Include tasks for creating aks
+  include_tasks: "{{ item }}"
+  with_items:
     - "aks.yaml"
   tags:
-    - createrg
-    - createaks
+    - createAks
+
+- name: Include tasks for aks postdeplyment tasks
+  include_tasks: "{{ item }}"
+  with_items:
+    - "postdeploy.yaml"
+  tags:
+    - createAks
+
+- name: Include tasks for deleting resource groups
+  include_tasks: "{{ item }}"
+  with_items:
+    - "deleterg.yaml"
+  tags:
+    - deleteRg

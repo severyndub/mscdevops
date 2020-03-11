@@ -1,16 +1,4 @@
 ---
-- name: Create primary resource group
-  azure_rm_resourcegroup:
-    name: "{{ resourceGroupName }}"
-    location: "{{ location }}"
-    tags: "{{ rg_tags }}"
-    subscription_id: "{{ azureSubId }}"
-    client_id: "{{ az_client_id }}"
-    tenant: "{{ az_tenant_id}}"
-    secret: "{{ az_secret }}"
-  run_once: "{{ run_mode_once | default(false) }}"
-  tags: createrg
-
 - name: Create NSG resource group
   azure_rm_resourcegroup:
     name: "{{ nsg.rg }}"
@@ -20,6 +8,7 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
+    force: True
   run_once: "{{ run_mode_once | default(false) }}"
   when: ( nsg is defined and nsg.rg is defined )
   tags: createrg
@@ -33,16 +22,20 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
+    force: True
   run_once: "{{ run_mode_once | default(false) }}"
   when: ( vnet.rg is defined )
   tags: createrg
 
-- name: Delete a resource group
+- name: Create AKS resource group
   azure_rm_resourcegroup:
-    name: "{{ resourceGroupName }}"
-    state: absent
+    name: "{{ aks.rg }}"
+    location: "{{ location }}"
+    tags: "{{ rg_tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
-  tags: deleterg
+    force: True
+  run_once: "{{ run_mode_once | default(false) }}"
+  tags: createrg

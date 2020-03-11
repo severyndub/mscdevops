@@ -1,0 +1,26 @@
+- name: Delete aks resource group
+  azure_rm_resourcegroup:
+    name: "{{ aks.rg }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+
+- name: Delete nsg resource group
+  azure_rm_resourcegroup:
+    name: "{{ nsg.rg }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+
+- name: Delete vnet resource group
+  azure_rm_resourcegroup:
+    name: "{{ vnet.rg }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"

@@ -1,0 +1,6 @@
+---
+- name: Add service endpoint to AKS subnet
+  shell: "az network vnet subnet update --subscription {{ azureSubId }} --resource-group {{ vnet.rg }} --name {{ aks.subnet.name }} --service-endpoints Microsoft.Sql --vnet-name {{ vnet.name }}"
+  when:  ( networking.subnet is defined )
+  tags:
+    - postdeployment
