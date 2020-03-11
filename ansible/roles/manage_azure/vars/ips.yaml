@@ -1,0 +1,6 @@
+---
+allowedIPs:
+  - 77.252.197.165 # home
+  - 168.208.6.11 # chrobinson office warsaw
+sshDevOpsAccess:
+  - 77.252.197.165 # home
