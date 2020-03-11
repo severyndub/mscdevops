@@ -21,7 +21,7 @@
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
-  when: ( nsg is defined and nsg.rg is defined ) and ( networking.subnet is defined )
+  when: ( nsg is defined and nsg.rg is defined )
   tags: createrg
 
 - name: Create VNET resource group
@@ -34,16 +34,15 @@
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   run_once: "{{ run_mode_once | default(false) }}"
-  when: ( vnet is defined ) and ( vnet == 'yes' )
+  when: ( vnet.rg is defined )
   tags: createrg
 
-# - name: Delete a resource group
-#   azure_rm_resourcegroup:
-#     name: "{{ resourceGroupName }}"
-#     state: absent
-#     subscription_id: "{{ azureSubId }}"
-#     client_id: "{{ az_client_id }}"
-#     tenant: "{{ az_tenant_id}}"
-#     secret: "{{ az_secret }}"
-#   tags:
-#     - deleterg
+- name: Delete a resource group
+  azure_rm_resourcegroup:
+    name: "{{ resourceGroupName }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  tags: deleterg
