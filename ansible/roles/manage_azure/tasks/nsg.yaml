@@ -6,6 +6,9 @@
       location: "{{ location }}"
       purge_rules: "yes"
       client_id: "{{ az_client_id }}"     
+      secret: "{{ az_secret }}"    
+      subscription_id: "{{ azureSubId }}"
+      tenant: "{{ az_tenant_id}}"
       rules:
         - name: DenySSH
           description: "deny ssh"
@@ -14,9 +17,6 @@
           access: Deny
           priority: "100"
           direction: Inbound
-      secret: "{{ az_secret }}"    
-      subscription_id: "{{ azureSubId }}"
-      tenant: "{{ az_tenant_id}}"
 
           # - name: 'AllowSSH'
           #   protocol: Tcp
