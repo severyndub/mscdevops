@@ -9,6 +9,26 @@
   tags:
     - always
 
+- name: Az set subscription
+  local_action: shell /usr/bin/az account set -s "{{ azureSubId }}"
+  become: no
+  run_once: true
+  tags:
+    - always
+  
+# - name: Get account details
+#   local_action: shell az account show
+#   register: showAccountDet
+#   tags:
+#     - always
+
+# - name: Print account details
+#   debug:
+#     msg: |
+#       "{{ showAccountDet.stdout }}"
+#   tags:
+#     - always
+
 - name: Include task for creating resource groups
   include_tasks: "{{ item }}"
   with_items:

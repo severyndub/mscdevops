@@ -6,9 +6,4 @@ sudo ansible-playbook ansible/setupinfra.yaml --inventory ansible/inventories/ms
 
 pip3 install {module_name}
 
-ERROR:
-
-An exception occurred during task execution. To see the full traceback, use -vvv. The error was: ImportError: No module named packaging.version
-fatal: [frontendservice]: FAILED! => {"changed": false, "module_stderr": "Traceback (most recent call last):\n  File \"/tmp/ansible_jtqs5W/ansible_module_azure_rm_resourcegroup.py\", line 103, in <module>\n    from ansible.module_utils.azure_rm_common import AzureRMModuleBase\n  File \"/tmp/ansible_jtqs5W/ansible_modlib.zip/ansible/module_utils/azure_rm_common.py\", line 28, in <module>\nImportError: No module named packaging.version\n", "module_stdout": "", "msg": "MODULE FAILURE", "rc": 0}
-An exception occurred during task execution. To see the full traceback, use -vvv. The error was: ImportError: No module named packaging.version
-fatal: [backendservice]: FAILED! => {"changed": false, "module_stderr": "Traceback (most recent call last):\n  File \"/tmp/ansible_Vuw4ls/ansible_module_azure_rm_resourcegroup.py\", line 103, in <module>\n    from ansible.module_utils.azure_rm_common import AzureRMModuleBase\n  File \"/tmp/ansible_Vuw4ls/ansible_modlib.zip/ansible/module_utils/azure_rm_common.py\", line 28, in <module>\nImportError: No module named packaging.version\n", "module_stdout": "", "msg": "MODULE FAILURE", "rc": 0}
+sudo ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --extra-vars "env=mscdevops" --vault-password-file /var/lib/jenkins/secrets/ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3'

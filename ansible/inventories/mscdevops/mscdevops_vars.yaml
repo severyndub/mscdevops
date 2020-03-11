@@ -8,6 +8,9 @@
 # az_aks_client_id - aks service principal client id
 # az_aks_secret - aks service principal secret
 
+###########################Env variables#########################################
+ansible_python_interpreter: /usr/bin/python3
+
 ###########################Azure variables#########################################
 azureSubId: "131f79c1-67a0-4989-b698-a131af549e69"
 location: "westeurope"

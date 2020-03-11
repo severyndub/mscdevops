@@ -1,0 +1,10 @@
+---
+allowedIPs:
+  - asd
+sshDevOpsAccess:
+  - 'abc'
+# allowedIPs:
+#   - '77.252.197.165/24'
+#   - '168.208.6.11/24'
+# sshDevOpsAccess:
+#   - '77.252.197.165/24'
