@@ -1,29 +1,21 @@
-# author: Seweryn Malinowski
 ---
-
-- name: Create AKS cluster
-  shell: "az aks create -n {{ aks.name }} -g {{ aks.rg | default(resourceGroupName) }} -k {{ aks.version }} --vnet-subnet-id /subscriptions/{{ azureSubId }}/resourceGroups/{{ vnet.rg }}/providers/Microsoft.Network/virtualNetworks/{{ vnet.name }}/subnets/{{ aks.subnet.name }}--disable-rbac --node-count {{ aks.node.count }} --node-vm-size {{ aks.node.size }} --network-plugin azure --service-principal {{ aks.client.id }} --client-secret {{ aks.client.secret }} --subscription {{ azureSubId }} --generate-ssh-keys"
-  when: ( aksOff is not defined or aksOff == "no" )
-  tags:
-    - createAksOld
-
 - name: Create a managed Azure Container Services (AKS) instance
   azure_rm_aks:
     name: "{{ aks.name }}"
     location: "{{ location }}"
     resource_group: "{{ aks.rg }}"
     dns_prefix: aksdns
-    kubernetes_version: "{{ aks.version }} "
-    # linux_profile:
-    #   admin_username: azureuser
-    #   ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA...
+    kubernetes_version: "{{ aks.version }}"
+    linux_profile:
+      admin_username: "{{ linux_profile_ssh_username }}"
+      ssh_key: "{{ linux_profile_ssh_key }}" 
     service_principal:
-      client_id: "{{ az_aks_client_id }}"
+      client_id: "{{ aks.client.id }}"
       client_secret: "{{ aks.client.secret }} "
     agent_pool_profiles:
       - name: default
-        count: 2
-        vm_size: Standard_D2_v2
+        count: 1
+        vm_size: Standard_B2s
     tags: "{{ aks.tags }}"
   tags:
     - createAks

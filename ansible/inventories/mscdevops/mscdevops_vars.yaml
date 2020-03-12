@@ -30,7 +30,7 @@ dbUrl: "mongodb+srv://dbUser:{{ dbUser }}@{{ dbSrv }}.azure.mongodb.net/{{ dbNam
 
 aks:
   name: "{{ environmentPrefix }}-aks"
-  version: "1.13.12"
+  version: 1.15.7
   vnet: "{{ vnet.name }}"
   rg: "{{ environmentPrefix }}-aks-rg"
   subnet:

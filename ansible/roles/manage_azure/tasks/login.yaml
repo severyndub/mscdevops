@@ -1,0 +1,12 @@
+---
+- name: Login to azure by az login
+  shell: "az login --service-principal -u {{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id}}"
+  tags:
+    - always
+
+- name: Az set subscription
+  local_action: shell /usr/bin/az account set -s "{{ azureSubId }}"
+  become: no
+  run_once: true
+  tags:
+    - always

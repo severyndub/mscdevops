@@ -58,6 +58,7 @@
     - "aks.yaml"
   tags:
     - createAks
+    - deleteAks
 
 - name: Include tasks for aks postdeplyment tasks
   include_tasks: "{{ item }}"
