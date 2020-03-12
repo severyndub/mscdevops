@@ -1,3 +1,4 @@
+---
 - name: Delete aks resource group
   azure_rm_resourcegroup:
     name: "{{ aks.rg }}"
@@ -6,6 +7,8 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
+  tags:
+    - deleteRg
 
 - name: Delete nsg resource group
   azure_rm_resourcegroup:
@@ -15,6 +18,8 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
+  tags:
+    - deleteRg
 
 - name: Delete vnet resource group
   azure_rm_resourcegroup:
@@ -24,3 +29,5 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
+  tags:
+    - deleteRg

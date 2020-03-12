@@ -4,6 +4,11 @@
   tags:
     - always
 
+- name: Include variables from nsgautomation
+  include_vars: "../../../nsgautomation/vars/ips.yaml"
+  tags:
+    - createNsg
+
 - name: Login to azure by az login
   shell: "az login --service-principal -u {{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id}}"
   tags:
@@ -16,19 +21,6 @@
   tags:
     - always
   
-# - name: Get account details
-#   local_action: shell az account show
-#   register: showAccountDet
-#   tags:
-#     - always
-
-# - name: Print account details
-#   debug:
-#     msg: |
-#       "{{ showAccountDet.stdout }}"
-#   tags:
-#     - always
-
 - name: Include task for creating resource groups
   include_tasks: "{{ item }}"
   with_items:
@@ -42,6 +34,7 @@
     - "vnet.yaml"
   tags:
     - createVnet
+    - deleteVnet
 
 - name: Include tasks for creating nsg
   include_tasks: "{{ item }}"
@@ -49,6 +42,7 @@
     - "nsg.yaml"
   tags:
     - createNsg
+    - deleteNsg
 
 - name: Include tasks for creating subnets
   include_tasks: "{{ item }}"
@@ -56,6 +50,7 @@
     - "subnet.yaml"
   tags:
     - createSubnet
+    - deleteSubnet
 
 - name: Include tasks for creating aks
   include_tasks: "{{ item }}"

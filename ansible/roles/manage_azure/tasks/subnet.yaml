@@ -6,27 +6,27 @@
     virtual_network_name: "{{ vnet.name }}"
     address_prefix_cidr: "{{ networking.subnet.aks }}"
     security_group:
-      name: "{{ aks.nsg.name }}"
-      resource_group: "{{ aks.nsg.rg }}"
+      name: "{{ nsg.name }}"
+      resource_group: "{{ nsg.rg }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
   when: ( networking.subnet is defined )
   tags:
-    - createsubnet
+    - createSubnet
 
 # Could ne used explicitly if not deleting whole rg
-# - name: Delete AKS subnet
-#   azure_rm_subnet:
-#     name: "{{ aks.subnet.name }}"
-#     resource_group: "{{ vnet.rg }}"
-#     virtual_network_name: "{{ vnet.name }}"
-#     state: absent
-#     subscription_id: "{{ azureSubId }}"
-#     client_id: "{{ az_client_id }}"
-#     tenant: "{{ az_tenant_id}}"
-#     secret: "{{ az_secret }}"
-#   when: ( networking.subnet is defined )
-#   tags:
-#     - deleteaks
+- name: Delete AKS subnet
+  azure_rm_subnet:
+    name: "{{ aks.subnet.name }}"
+    resource_group: "{{ vnet.rg }}"
+    virtual_network_name: "{{ vnet.name }}"
+    state: absent
+    subscription_id: "{{ azureSubId }}"
+    client_id: "{{ az_client_id }}"
+    tenant: "{{ az_tenant_id}}"
+    secret: "{{ az_secret }}"
+  when: ( networking.subnet is defined )
+  tags:
+    - deleteSubnet

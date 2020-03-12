@@ -16,12 +16,14 @@ azureSubId: "131f79c1-67a0-4989-b698-a131af549e69"
 location: "westeurope"
 devops:
   rg:
-    name: "devops"
+    name: "security"
+    tags: "{'env':'devops'}"
   nsg:
     name: "devops"
-
+mscdevops:
+  rg:
+    tags: "{'env':'ca1'}"
 environmentPrefix: "{{ env }}"
-rg_tags: "{'env':'ca1'}"
 
 #dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
 dbUrl: "mongodb+srv://dbUser:{{ dbUser }}@{{ dbSrv }}.azure.mongodb.net/{{ dbName }}?retryWrites=true&connectTimeoutMS=600000"
@@ -42,14 +44,15 @@ aks:
   node:
     count: 2
     size: "Standard_D8s_v3"
+  tags: "{'env':'ca1'}"
 
 vnet:
   name: "{{ environmentPrefix }}-vnet"
   rg: "{{ environmentPrefix }}-vnet-rg"
 
 nsg:
-  name: "{{ environmentPrefix }}-nsg"
-  rg: "{{ environmentPrefix }}-nsg-rg"
+  name: "{{ environmentPrefix }}-security-nsg"
+  rg: "{{ environmentPrefix }}-security-rg"
 
 networking:
   dns: "8.8.8.8"
