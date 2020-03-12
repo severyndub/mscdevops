@@ -3,9 +3,10 @@
   connection: local
   become: false
   vars:
-    projectDir: ./../
+    #projectDir: ./../
     inventoryDir: "{{ playbook_dir }}/inventories/{{ env }}"
-    ansibleServerIP: "{{ ansibleIP | default('40.118.43.201') }}"
+    #ansibleServerIP: "{{ ansibleIP | default('40.118.43.201') }}"
+    ansible_connection: local
     env: "{{ env }}"
     ansible_ssh_port: "{{ ssh_port | default(22)}}"
   vars_files:

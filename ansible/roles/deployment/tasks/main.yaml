@@ -17,7 +17,7 @@
     state: absent
     
 - name: Set kubernetes context
-  command: az account set -s "{{ az_sub }}"
+  command: az account set -s "{{ azureSubId }}"
   delegate_to: localhost
 
 - name: Set kubernetes context
@@ -27,9 +27,9 @@
   shell: "{{ kubectl }} apply -f {{ aksPath }}/{{ env }}/{{ appName }}/service.yaml"
   when: svc == 'true'
 
-- name: ETL config update
-  shell: "{{ kubectl }} apply -f {{ aksPath }}/{{ env }}/etl/configMap.yaml"
-  when: ncm == 'true' and appName == 'etl'
+# - name: ETL config update
+#   shell: "{{ kubectl }} apply -f {{ aksPath }}/{{ env }}/etl/configMap.yaml"
+#   when: ncm == 'true' and appName == 'etl'
 
 - name: Check if deployment exist
   shell: "{{ kubectl }} get deployments | grep -o {{ aksDeploy.metadata.name }}"

@@ -4,7 +4,7 @@
   connection: local
   become: false
   vars:
-    projectDir: ./../
+    #projectDir: ./../
     inventoryDir: "{{ playbook_dir }}/inventories/{{ env }}"
     ansibleServerIP: "{{ ansibleIP | default('40.118.43.201') }}"
     env: "{{ env }}"

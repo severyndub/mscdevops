@@ -1,15 +1,17 @@
 - hosts: localhost
+  gather_facts: no
+  connection: local
+  become: false
   vars:
+    #projectDir: ./../
+    inventoryDir: "{{ playbook_dir }}/inventories/{{ env }}"
     ansible_connection: local
-    frontend: ""
-    backend: ""
+    frontend: "ead_ca1_fe"
+    backend: "ead_ca1_ws"
     env: "{{ env }}"
     ansible_ssh_port: "{{ ssh_port | default(443)}}"
   vars_files:
-    - vault.yaml
+    - "{{ inventoryDir }}/{{ env }}_vault.yaml"
   roles:
-    - role: login
-    - role: deploy_app
-      when: appName in apis
-    - role: deploy_ui
-      when: appName in uis
+    - role: common
+    - role: deployment
