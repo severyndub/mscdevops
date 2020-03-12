@@ -35,7 +35,7 @@
 
   - name: Update rules on existing security group
     azure_rm_securitygroup:
-      resource_group: "{{ devops.rg.name }}"
+      resource_group: "{{ nsg.rg }}"
       name: "{{ devops.nsg.name }}"
       location: "{{ location }}"
       rules:
@@ -43,7 +43,7 @@
             protocol: Tcp
             destination_port_range: "{{ sshPort }}"
             access: Deny
-            priority: 100
+            priority: 105
             direction: Inbound
           - name: AllowSSH
             protocol: Tcp

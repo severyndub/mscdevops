@@ -1,0 +1,126 @@
+---
+
+- name: Set aks into dev1 context
+  set_fact:
+    aks: "aksdev1"
+    rgName: "azrg-adv-bd1-s-devr1-01"
+  when: env == 'dev1'
+
+- name: Set aks into dev1ter1 context
+  set_fact:
+    aks: "aksdev1tertiary1-0"
+    rgName: "azrg-adv-bd1-s-devr1-tertiary1-01"
+  when: env == 'dev1ter1'
+
+- name: Set aks into dev4 context
+  set_fact:
+    aks: "devr4aks"
+    rgName: "azrg-adv-devenv1-s-dev-01"
+  when: env == 'dev4'
+
+- name: Set aks into dev7 context
+  set_fact:
+    aks: "dev7aks"
+    rgName: "azrg-adv-bd2-s-dev7-01"
+  when: env == 'dev7'
+
+- name: Set aks into st1 context
+  set_fact:
+    aks: "aksst1sepvnet"
+    rgName: "azrg-adv-bmn-s-testr1-01"
+  when: env == 'st1'
+
+- name: Set aks into st3 context
+  set_fact:
+    aks: "aksst3new"
+    rgName: "azrg-adv-bbr-s-test-01"
+  when: env == 'st3'
+
+- name: Set aks into st3ter1 context
+  set_fact:
+    aks: "aksst3tertiary1"
+    rgName: "azrg-adv-binter-s-test-01"
+  when: env == 'st3ter1'
+
+- name: Set aks into iuat broker context
+  set_fact:
+    aks: "aksiuatbr"
+    rgName: "azrg-adv-bbr-s-uat-01"
+  when: env == 'iuat' and appName == 'brokerapi'
+
+- name: Set aks into iuat mnc context
+  set_fact:
+    aks: "aksiuatmnc"
+    rgName: "azrg-adv-bmn-s-uat-01"
+  when: env == 'iuat' and appName == 'buyerapi'
+
+- name: Set aks into iuat insurer context
+  set_fact:
+    aks: "aksiuatgard"
+    rgName: "azrg-adv-bin-s-uat-01"
+  when: env == 'iuat' and appName == 'insurerapi'
+
+- name: Set aks into e1 broker context
+  set_fact:
+    aks: "e1-broker-aks"
+    rgName: "azrg-adv-isw-slf-e1-broker"
+  when: env == 'e1' and appName == 'brokerapi'
+
+- name: Set aks into e1 buyer context
+  set_fact:
+    aks: "e1-buyer-aks"
+    rgName: "azrg-adv-isw-slf-e1-buyer"
+  when: env == 'e1' and appName == 'buyerapi'
+
+- name: Set aks into e1 buyer context
+  set_fact:
+    aks: "e1-buyer-aks"
+    rgName: "azrg-adv-isw-slf-e1-buyer"
+  when: env == 'e1' and appName == 'bod'
+
+- name: Set aks into e1 buyer context
+  set_fact:
+    aks: "e1-buyer-aks"
+    rgName: "azrg-adv-isw-slf-e1-buyer"
+  when: env == 'e1' and appName == 'etl'
+
+- name: Set aks into e1 insurer context
+  set_fact:
+    aks: "e1-insurer-aks"
+    rgName: "azrg-adv-isw-slf-e1-insurer"
+  when: env == 'e1' and appName == 'insurerapi'
+
+- name: Set aks into e1 operator context
+  set_fact:
+    aks: "e1-operator-aks"
+    rgName: "azrg-adv-isw-slf-e1-operatorservices"
+  when: env == 'e1' and (appName == 'operatorapi' or appName == 'operatorui')
+
+- name: Set aks into e1 registrationapi context
+  set_fact:
+    aks: "e1-operator-aks"
+    rgName: "azrg-adv-isw-slf-e1-operatorservices"
+  when: env == 'e1' and (appName == 'registrationapi' or appName == 'registrationapiui')
+
+- name: Set aks into e1 reinsurer context
+  set_fact:
+    aks: "e1-reinsurer-aks"
+    rgName: "azrg-adv-isw-slf-e1-reinsurer"
+  when: env == 'e1' and appName == 'reinsurerapi'
+
+- name: Set aks into e1 retroinsurer context
+  set_fact:
+    aks: "e1-retroinsurer-aks"
+    rgName: "azrg-adv-isw-slf-e1-retroinsurer"
+  when: env == 'e1' and appName == 'retroinsurerapi'
+
+- name: Set aks into e1 wholesalebroker context
+  set_fact:
+    aks: "e1-wholesalebroker-aks"
+    rgName: "azrg-adv-isw-slf-e1-wholesalebroker"
+  when: env == 'e1' and appName == 'wholesalebrokerapi'
+
+- name: Choose correct subscription
+  set_fact:
+    az_sub: "azsub-emeia-emn-slfdev-isw-38348222"
+  when: env == 'e1'

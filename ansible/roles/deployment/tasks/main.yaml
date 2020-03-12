@@ -4,13 +4,6 @@
     file: "{{ aksPath }}/{{ env }}/{{ appName }}/deploy.yaml"
     name: aksDeploy
 
-- name: Set aks into context
-  include_role:
-    name: choose_aks
-  vars:
-    env: "{{ env }}"
-    appName: "{{ appName }}"
-
 - name: Remove kubectl config
   file:
     path: "/home/bcadmin/.kube/config"
@@ -20,16 +13,17 @@
   command: az account set -s "{{ azureSubId }}"
   delegate_to: localhost
 
+- name: Set aks into context
+  set_fact:
+    aks: "{{ aks.name }}"
+    rgName: "{{ aks.rg }}"
+
 - name: Set kubernetes context
-  command: az aks get-credentials --overwrite-existing --resource-group "{{ rgName }}" --name "{{ aks }}"
+  command: az aks get-credentials --overwrite-existing --resource-group "{{ aks.rg }}" --name "{{ aks.name }}"
 
 - name: Service update
   shell: "{{ kubectl }} apply -f {{ aksPath }}/{{ env }}/{{ appName }}/service.yaml"
   when: svc == 'true'
-
-# - name: ETL config update
-#   shell: "{{ kubectl }} apply -f {{ aksPath }}/{{ env }}/etl/configMap.yaml"
-#   when: ncm == 'true' and appName == 'etl'
 
 - name: Check if deployment exist
   shell: "{{ kubectl }} get deployments | grep -o {{ aksDeploy.metadata.name }}"
@@ -49,12 +43,12 @@
   retries: 5
   ignore_errors: yes
 
-- name: Set build version
-  replace:
-    path: "{{ aksPath }}/{{ env }}/{{ appName }}/deploy.yaml"
-    regexp: '#BUILD#'
-    replace: '{{ build }}'
-    backup: no
+# - name: Set build version
+#   replace:
+#     path: "{{ aksPath }}/{{ env }}/{{ appName }}/deploy.yaml"
+#     regexp: '#BUILD#'
+#     replace: '{{ build }}'
+#     backup: no
 
 - name: Run "{{ appName }}" container
   shell: "{{ kubectl }} apply -f {{ aksPath }}/{{ env }}/{{ appName }}/deploy.yaml"
@@ -66,10 +60,10 @@
   delay: 5
   retries: 15
 
-- name: Reset build version
-  replace:
-    path: "{{ aksPath }}/{{ env }}/{{ appName }}/deploy.yaml"
-    regexp: '{{ build }}'
-    replace: '#BUILD#'
-    backup: no
+# - name: Reset build version
+#   replace:
+#     path: "{{ aksPath }}/{{ env }}/{{ appName }}/deploy.yaml"
+#     regexp: '{{ build }}'
+#     replace: '#BUILD#'
+#     backup: no
 

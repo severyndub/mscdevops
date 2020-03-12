@@ -13,5 +13,5 @@
   vars_files:
     - "{{ inventoryDir }}/{{ env }}_vault.yaml"
   roles:
-    - role: common
+    - role: login
     - role: deployment
