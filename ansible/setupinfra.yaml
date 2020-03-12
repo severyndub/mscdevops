@@ -3,7 +3,7 @@
   connection: local
   become: false
   vars:
-    #projectDir: ./../
+    kubectl: "/usr/local/bin/kubectl"
     inventoryDir: "{{ playbook_dir }}/inventories/{{ env }}"
     #ansibleServerIP: "{{ ansibleIP | default('40.118.43.201') }}"
     ansible_connection: local

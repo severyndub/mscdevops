@@ -10,3 +10,6 @@ ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --extra-vars "en
 
 
 ad_user,append_tags,cli_default_profile,client_id,cloud_environment,default_rules,location,name,password,profile,purge_default_rules,purge_rules,resource_group,rules,secret,state,subscription_id,tags,tenant
+
+
+kubectl create secret docker-registry myseckey --docker-server mcsdevopsentarch.azurecr.io --docker-email sverynwaw@outlook.com --docker-username ce69d460-b0b6-4ec7-9f64-92ab0479d5bc --docker-password P1CW@H5pAb.PfRVkVQKqbt6-oW-Avsx0

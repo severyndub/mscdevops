@@ -64,3 +64,5 @@ dockerRegistry:  "mcsdevopsentarch.azurecr.io"
 dockerImage: "{{ dockerRegistry }}/mscdevopsca1/{{dockerImageName}}"
 dockerTag: "{{ dockerImageTagVar }}"
 dockerUser: mcsdevopsentarch
+
+acrSecName: "myseckey"

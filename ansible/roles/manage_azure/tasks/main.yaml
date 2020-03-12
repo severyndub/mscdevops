@@ -8,19 +8,7 @@
   include_vars: "../../../nsgautomation/vars/ips.yaml"
   tags:
     - createNsg
-
-# - name: Login to azure by az login
-#   shell: "az login --service-principal -u {{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id}}"
-#   tags:
-#     - always
-
-# - name: Az set subscription
-#   local_action: shell /usr/bin/az account set -s "{{ azureSubId }}"
-#   become: no
-#   run_once: true
-#   tags:
-#     - always
-  
+ 
 - name: Include task for creating resource groups
   include_tasks: "{{ item }}"
   with_items:
@@ -59,6 +47,13 @@
   tags:
     - createAks
     - deleteAks
+
+- name: Include tasks for aks management
+  include_tasks: "{{ item }}"
+  with_items:
+    - "manage-aks.yaml"
+  tags:
+    - manageAks
 
 - name: Include tasks for aks postdeplyment tasks
   include_tasks: "{{ item }}"

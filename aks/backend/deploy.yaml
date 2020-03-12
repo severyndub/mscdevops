@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: backendservice
+    spec:
+      containers:
+      - name: backendservice
+        image: mcsdevopsentarch.azurecr.io/backendservice:#BUILD#
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
+          limits:
+            cpu: "1000m"
+            memory: "256Mi"
+        volumeMounts:
+        - mountPath: "/mnt/backendservice"
+          name: azurelogs
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+        #env:
+        # - name: AZURE_STORAGE_ACCOUNT_NAME
+        #   value: ""
+        # - name: AZURE_STORAGE_ACCOUNT_KEY
+        #   value: ""
+        # - name: AZURE_STORAGE_CONTAINER_NAME
+        #   value: "backendservice"
+      imagePullSecrets:
+      - name: myseckey

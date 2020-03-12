@@ -1,0 +1,35 @@
+---
+
+
+
+- name: Az login
+  shell: "az login --service-principal -u {{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id }}"
+  tags:
+    - manageAks
+
+- name: Az subscription set
+  shell: "az account set -s {{ azureSubId }}"
+  tags:
+    - manageAks
+
+- name: Set kubernetes context
+  shell: "az aks get-credentials --subscription {{ azureSubId }} --name {{ aks.name }} --resource-group {{ aks.rg }} --overwrite-existing"
+  tags:
+    - manageAks
+
+- name: Get secrets
+  shell: "kubectl get secret | cut -d' ' -f1"
+  register: kubernetesSecrets
+  tags:
+    - manageAks
+
+- name: Delete ACR secret if exist
+  shell: "kubectl delete secret kubectl get secret myseckey | grep -o myseckey"
+  when: acrSecName in kubernetesSecrets.stdout
+  tags:
+    - manageAks
+
+- name: Create Docker secret
+  shell: "kubectl create secret docker-registry {{ acrSecName }} --docker-server={{ dockerRegistry }} --docker-username={{ dockerUser }} --docker-password={{ vault_docker_pass }}"
+  tags:
+    - manageAks
