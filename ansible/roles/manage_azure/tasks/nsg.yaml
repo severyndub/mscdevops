@@ -5,6 +5,7 @@
     name: "{{ nsg.name }}"
     location: "{{ location }}"
     purge_rules: "yes"
+    tags: "{{ mscdevops.tags }}"
     rules:
       - name: DenySSH
         description: "deny ssh"

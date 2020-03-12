@@ -16,7 +16,7 @@
       - name: default
         count: 1
         vm_size: Standard_B2s
-    tags: "{{ aks.tags }}"
+    tags: "{{ mscdevops.tags }}"
   tags:
     - createAks
 

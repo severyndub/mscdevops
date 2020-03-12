@@ -3,7 +3,7 @@
   azure_rm_resourcegroup:
     name: "{{ nsg.rg }}"
     location: "{{ location }}"
-    tags: "{{ mscdevops.rg.tags }}"
+    tags: "{{ mscdevops.tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
@@ -17,7 +17,7 @@
   azure_rm_resourcegroup:
     name: "{{ vnet.rg }}"
     location: "{{ location }}"
-    tags: "{{ mscdevops.rg.tags }}"
+    tags: "{{ mscdevops.tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
@@ -31,7 +31,7 @@
   azure_rm_resourcegroup:
     name: "{{ aks.rg }}"
     location: "{{ location }}"
-    tags: "{{ mscdevops.rg.tags }}"
+    tags: "{{ mscdevops.tags }}"
     subscription_id: "{{ azureSubId }}"
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"

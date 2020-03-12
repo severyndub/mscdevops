@@ -8,7 +8,7 @@
   vars_files:
     - vault.yaml
   roles:
-    - role: loipin
+    - role: login
     - role: deploy_app
       when: appName in apis
     - role: deploy_ui
