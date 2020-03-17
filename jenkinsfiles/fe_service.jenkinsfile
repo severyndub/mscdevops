@@ -1,7 +1,3 @@
-//https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE
-//git@ssh.dev.azure.com:v3/KarenANolan/EAD_CA1_FE/EAD_CA1_FE
-
-
 #!groovy
 
 node {
