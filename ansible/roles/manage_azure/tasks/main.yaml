@@ -12,7 +12,7 @@
 - name: Include task to login to azure as a service principal
   include_tasks: "{{ item }}"
   with_items:
-    - "../login/login.yaml"
+    - "../../login/tasks/login.yaml"
   tags: 
     - always
 
