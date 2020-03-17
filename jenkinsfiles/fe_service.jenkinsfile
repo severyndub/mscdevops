@@ -23,7 +23,7 @@ node {
             error("No branch name was given!")
         }
 
-        if (mainBranches.containsKey(branchName)) {
+
             if (buildImages) {
                 if (!buildLabel) {
                     // label wasn't set manually
@@ -34,10 +34,7 @@ node {
                 }
                 env.BUILD_LABEL = buildLabel // env variable needed in setting the version
             }
-        } else {
-            buildImages = false
-            //queueDeploy = false
-        }
+
 
         echo """Parameters:
     branchName: '${branchName}' 
