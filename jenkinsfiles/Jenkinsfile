@@ -8,11 +8,11 @@ node {
 
 
     String targetEnv = ""
-    List tags = []
+    String tags = ""
 
     try {
         targetEnv = params.TARGET_ENV?.trim()
-        tags = params.TAGS?.toString()
+        tags = params.TAGS?.trim()
 
 
         echo """Parameters:
