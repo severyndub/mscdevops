@@ -1,8 +1,7 @@
 - hosts: localhost
   gather_facts: no
   connection: local
-  #become: true
-  become-user: root
+  become: true
   vars:
     kubectl: "/usr/local/bin/kubectl"
     inventoryDir: "{{ playbook_dir }}/inventories/{{ env }}"
