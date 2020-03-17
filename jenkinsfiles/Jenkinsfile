@@ -1,9 +1,3 @@
-//1) clone services repo for dockerfile
-//2) build docker - docker build . -t getintodevops-hellonode:1
-//3) run locly docker run -it -p 8000:8000 getintodevops-hellonode:1
-//4) test for response curl http://127.0.0.1:8000
-//5) push to acr
-
 #!groovy
 
 node {
@@ -17,54 +11,22 @@ node {
 
     String branchName = ""
     String buildLabel = ""
-    boolean buildImages = false
-    boolean queueDeploy = false
     String targetEnv = ""
 
     try {
 
-        if (env.BRANCH_NAME?.trim()) {
-            // if branch name comes from env, it is an automatic build
-            branchName = env.BRANCH_NAME?.trim()
-            if (mainBranches.containsKey(branchName)) {
-                targetEnv = mainBranches[branchName].targetEnv
-                buildImages = true
-                queueDeploy = true
-            }
-        } else {
-            // is manual build
-            branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
-            buildLabel = params.BUILD_LABEL?.trim()
-            buildImages = params.BUILD_IMAGES
-            queueDeploy = params.QUEUE_DEPLOY
-            targetEnv = params.TARGET_ENV?.trim()
-        }
+        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
+        buildLabel = params.BUILD_LABEL?.trim()
+        targetEnv = params.TARGET_ENV?.trim()
+
 
         if (!branchName) {
             error("No branch name was given!")
         }
 
-        if (mainBranches.containsKey(branchName)) {
-            if (buildImages) {
-                if (!buildLabel) {
-                    // label wasn't set manually
-                    buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
-                }
-                if (!buildLabel || buildLabel == "latest") {
-                    error("Build label must be specified!: '${buildLabel}'")
-                }
-                env.BUILD_LABEL = buildLabel // env variable needed in setting the version
-            }
-        } else {
-            buildImages = false
-            queueDeploy = false
-        }
-
         echo """Parameters:
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}' 
-    buildImages: '${buildImages}'
-    queueDeploy: '${queueDeploy}'
     targetEnv: '${targetEnv}'
 """
 
@@ -75,52 +37,16 @@ node {
             echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
         }
 
-        if (buildImages) {
+        stage("Setup infrastructure in Azure"){
 
-            stage("Build Images") {
-                echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
+            // Run ansible to create resource groups
+            sh "sudo ansible-playbook ansible/setupinfra.yaml --inventory ansible/inventories/mscdevops/mscdevops_inventory.yaml --extra-vars \"host_key_checking=False env=${targetEnv} location=westeurope ssh_port=22\" --vault-password-file /var/lib/jenkins/secrets/ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3' --tags 'createRg'"
 
-                sh "./gradlew setVersion"
-
-                sh "./gradlew buildImage"
-                echo "Containers built with tag '${buildLabel}'"
-                sh "docker images | grep ${buildLabel}"
-            }
-
-            stage("Push Images") {
-                sh "chmod +x ./push_images.sh"
-                sh "./push_images.sh ${buildLabel}"
-                echo "Docker images pushed to repository"
-            }
-
-            if (queueDeploy) {
-                stage("Queue deploy") {
-                    String deployType = "REDEPLOY"
-
-                    echo "Queueing Deploy job (${targetEnv}, ${buildLabel}, ${deployType})."
-
-                    build job: "Deploy",
-                            parameters: [
-                                    string(name: 'TARGET_ENV', value: "${targetEnv}"),
-                                    string(name: 'BUILD_LABEL', value: "${buildLabel}"),
-                                    string(name: 'DEPLOY_TYPE', value: "${deployType}")
-                            ],
-                            wait: false
-                }
-            }
         }
 
     } catch (e) {
         throw e
     } finally {
-        if (buildImages) {
-            stage("Clear Images") {
-                echo "Removing images with tag '${buildLabel}'"
-                sh "docker images | grep ${buildLabel}"
-                sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
-            }
-        }
-
         echo "Build done."
     }
 }
