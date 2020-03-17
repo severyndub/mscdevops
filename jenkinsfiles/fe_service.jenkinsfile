@@ -67,7 +67,7 @@ node {
             stage("Build Images") {
                 echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
 
-                sh "sudo docker build -t bp-service ."
+                sh "docker build -t bp-service ."
 
                 sh "docker run -p 8080:8080 bp-service"
                 echo "Docker containers built with tag '${buildLabel}'"
