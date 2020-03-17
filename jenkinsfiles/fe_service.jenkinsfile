@@ -51,7 +51,9 @@ node {
         }
 
         stage('Checkout frontend service') {
+            sh "ls -la"
             git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
+            sh "ls -la"
         }
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
@@ -75,7 +77,7 @@ node {
             stage("Push Images") {
                 echo $WORKSPACE
                 sh "ls -la $WORKSPACE"
-                sh "ls -ls ../"
+                sh "ls -la ../"
                 sh "chmod +x ../push_images.sh"
                 sh "../push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
