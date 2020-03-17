@@ -68,7 +68,6 @@ node {
 
                 sh "docker build -t bp-service ."
 
-                sh "docker run -p 22137:22137 bp-service"
                 echo "Docker containers built with tag '${buildLabel}'"
                 sh "docker images | grep ${buildLabel}"
             }
