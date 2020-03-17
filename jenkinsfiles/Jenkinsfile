@@ -6,27 +6,14 @@ node {
 
     // this disallows running multiple jobs for same branch at once
 
-    def mainBranches = [:]
-    mainBranches["master"] = [labelFormat: "jaz-{VERSION_TAG}"]
 
-    String branchName = ""
-    String buildLabel = ""
     String targetEnv = ""
 
     try {
-
-        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
-        buildLabel = params.BUILD_LABEL?.trim()
         targetEnv = params.TARGET_ENV?.trim()
 
 
-        if (!branchName) {
-            error("No branch name was given!")
-        }
-
         echo """Parameters:
-    branchName: '${branchName}' 
-    buildLabel: '${buildLabel}' 
     targetEnv: '${targetEnv}'
 """
 
