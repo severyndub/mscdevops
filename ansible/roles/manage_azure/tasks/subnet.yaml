@@ -12,7 +12,6 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
-    tags: "{{ mscdevops.tags }}"
   when: ( networking.subnet is defined )
   tags:
     - createSubnet
