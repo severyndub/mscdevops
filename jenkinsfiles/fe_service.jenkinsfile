@@ -1,4 +1,5 @@
 //https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE
+//git@ssh.dev.azure.com:v3/KarenANolan/EAD_CA1_FE/EAD_CA1_FE
 
 
 #!groovy
@@ -18,7 +19,7 @@ node {
         branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
         buildLabel = params.BUILD_LABEL?.trim()
         buildImages = params.BUILD_IMAGES
-        queueDeploy = params.QUEUE_DEPLOY
+        //queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
         
 
@@ -39,14 +40,13 @@ node {
             }
         } else {
             buildImages = false
-            queueDeploy = false
+            //queueDeploy = false
         }
 
         echo """Parameters:
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}' 
     buildImages: '${buildImages}'
-    queueDeploy: '${queueDeploy}'
     targetEnv: '${targetEnv}'
 """
 
@@ -55,6 +55,10 @@ node {
             def checkout = checkout scm
             env.COMMIT_HASH = checkout.GIT_COMMIT
             echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+        }
+
+        stage('Checkout frontend service') {
+            git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
         }
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
@@ -109,7 +113,8 @@ node {
                 sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
             }
         }
-
+        // Recursively delete the current directory from the workspace
+        deleteDir()
         echo "Build done."
     }
 }
