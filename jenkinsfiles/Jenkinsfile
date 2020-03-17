@@ -34,6 +34,7 @@ node {
     } catch (e) {
         throw e
     } finally {
+        cleanWs()
         echo "Build done."
     }
 }
