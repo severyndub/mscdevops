@@ -1,3 +1,0 @@
-FROM anapsix/alpine-java:8u151b12_jdk
-
-copy JAVA_APP/target/BPRestWS-1.0-SNAPSHOT-hollow-swarm.jar .
