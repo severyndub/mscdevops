@@ -8,7 +8,14 @@
   include_vars: "../../../nsgautomation/vars/ips.yaml"
   tags:
     - createNsg
- 
+
+- name: Include task to login to azure as a service principal
+  include_tasks: "{{ item }}"
+  with_items:
+    - "../login/login.yaml"
+  tags: 
+    - always
+
 - name: Include task for creating resource groups
   include_tasks: "{{ item }}"
   with_items:
