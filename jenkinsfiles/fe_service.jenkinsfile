@@ -73,7 +73,8 @@ node {
             }
 
             stage("Push Images") {
-                sh "ls -la /var/lib/jenkins/workspace/mscdevops-pipeline-build-fe"
+                echo $WORKSPACE
+                sh "ls -la $WORKSPACE"
                 sh "ls -ls ../"
                 sh "chmod +x ../push_images.sh"
                 sh "../push_images.sh ${buildLabel}"
