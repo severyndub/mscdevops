@@ -58,7 +58,9 @@ node {
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
         stage("Install npm dependencies") {
+            sh "ls"
             sh "cd $WORKSPACE/feservice"
+            sh "ls"
             sh "npm install"
             echo "dependencies install completed"
         }
