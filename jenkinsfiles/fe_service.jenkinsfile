@@ -79,16 +79,8 @@ node {
             }
 
             stage("Push Images") {
-                dir('feservice') {
-                    docker {
-                        image 'myregistry.com/node'
-                        label 'my-defined-label'
-                        registryUrl 'mcsdevopsentarch.azurecr.io'
-                        registryCredentialsId 'myPredefinedCredentialsInJenkins'
-                    }
-                }
-                // sh "chmod +x ./push_images.sh"
-                // sh "./push_images.sh ${buildLabel}"
+                sh "chmod +x ./push_images.sh"
+                sh "./push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
             }
 
