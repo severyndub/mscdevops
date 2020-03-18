@@ -70,9 +70,9 @@ node {
             stage("Build Images") {
                 dir('feservice') {
                     echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
-    
+
                     sh "docker build -t bp-service ."
-    
+
                     echo "Docker containers built with tag '${buildLabel}'"
                     sh "docker images | grep ${buildLabel}"
                 }
@@ -112,7 +112,7 @@ node {
             }
         }
         // Recursively delete the current directory from the workspace
-        //deleteDir()
+        deleteDir()
         echo "Build done."
     }
 }
