@@ -51,12 +51,14 @@ node {
         }
 
         stage('Checkout frontend service') {
-            git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
+            dir('feservice') {
+                git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
+            }
         }
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
         stage("Install npm dependencies") {
-            sh "npm install"
+            sh "npm install /feservice"
             echo "dependencies install completed"
         }
 
