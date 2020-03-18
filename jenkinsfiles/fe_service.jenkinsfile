@@ -79,8 +79,16 @@ node {
             }
 
             stage("Push Images") {
-                sh "chmod +x ./push_images.sh"
-                sh "./push_images.sh ${buildLabel}"
+                dir('feservice') {
+                    docker {
+                        image 'myregistry.com/node'
+                        label 'my-defined-label'
+                        registryUrl 'mcsdevopsentarch.azurecr.io'
+                        registryCredentialsId 'myPredefinedCredentialsInJenkins'
+                    }
+                }
+                // sh "chmod +x ./push_images.sh"
+                // sh "./push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
             }
 
@@ -108,7 +116,7 @@ node {
             stage("Clear Images") {
                 echo "Removing images with tag '${buildLabel}'"
                 sh "docker images | grep ${buildLabel}"
-                sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
+                //sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
             }
         }
         // Recursively delete the current directory from the workspace
