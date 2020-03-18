@@ -11,7 +11,7 @@ if [ -z ${tag} ]; then
 fi
 
 dockerRegistry=mcsdevopsentarch
-retryCount=3
+retryCount=1
 
 tryPushImage(){
     image=$1
