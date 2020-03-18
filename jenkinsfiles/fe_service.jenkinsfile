@@ -58,7 +58,7 @@ node {
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
         stage("Install npm dependencies") {
-            sh "npm install $WORKSPACE/feservice"
+            sh "npm install $WORKSPACE/feservice/"
             echo "dependencies install completed"
         }
 
@@ -75,8 +75,8 @@ node {
             // }
 
             stage("Push Images") {
-                sh "chmod +x ../push_images.sh"
-                sh "../push_images.sh ${buildLabel}"
+                sh "chmod +x ./push_images.sh"
+                sh "./push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
             }
 
