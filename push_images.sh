@@ -10,7 +10,7 @@ if [ -z ${tag} ]; then
     exit 1
 fi
 
-dockerRegistry=mcsdevopsentarch.azurecr.io
+dockerRegistry=mcsdevopsentarch
 retryCount=3
 
 tryPushImage(){
