@@ -68,12 +68,14 @@ node {
         if (buildImages) {
 
             stage("Build Images") {
-                echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
-
-                sh "docker build -t bp-service ."
-
-                echo "Docker containers built with tag '${buildLabel}'"
-                sh "docker images | grep ${buildLabel}"
+                dir('feservice') {
+                    echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
+    
+                    sh "docker build -t bp-service ."
+    
+                    echo "Docker containers built with tag '${buildLabel}'"
+                    sh "docker images | grep ${buildLabel}"
+                }
             }
 
             stage("Push Images") {
