@@ -51,9 +51,7 @@ node {
         }
 
         stage('Checkout frontend service') {
-            sh "ls -la"
             git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
-            sh "ls -la"
         }
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
@@ -65,18 +63,18 @@ node {
 
         if (buildImages) {
 
-            stage("Build Images") {
-                echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
+            // stage("Build Images") {
+            //     echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
 
-                sh "docker build -t bp-service ."
+            //     sh "docker build -t bp-service ."
 
-                echo "Docker containers built with tag '${buildLabel}'"
-                sh "docker images | grep ${buildLabel}"
-            }
+            //     echo "Docker containers built with tag '${buildLabel}'"
+            //     sh "docker images | grep ${buildLabel}"
+            // }
 
             stage("Push Images") {
                 echo $WORKSPACE
-                sh "ls -la $WORKSPACE"
+                sh "ls -la $env.WORKSPACE"
                 sh "ls -la ../"
                 sh "chmod +x ../push_images.sh"
                 sh "../push_images.sh ${buildLabel}"
