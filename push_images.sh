@@ -35,7 +35,7 @@ tryPushImage(){
 }
 
 main(){
-    docker tag ${tag} ${dockerRegistry}/${tag}
+    docker tag ${tag} ${dockerRegistry}.azurecr.io/${tag}
     dockerImageFullName=${dockerRegistry}/${tag}
     echo "finding images: '${dockerImageFullName}'"
 
