@@ -108,7 +108,7 @@ node {
             stage("Clear Images") {
                 echo "Removing images with tag '${buildLabel}'"
                 sh "docker images | grep ${buildLabel}"
-                //sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
+                sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
             }
         }
         // Recursively delete the current directory from the workspace
