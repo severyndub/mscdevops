@@ -51,7 +51,7 @@ node {
         }
 
         stage('Checkout frontend service') {
-            git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
+            //git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
         }
 
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
