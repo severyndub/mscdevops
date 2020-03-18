@@ -73,9 +73,8 @@ node {
             // }
 
             stage("Push Images") {
-                echo $WORKSPACE
-                sh "ls -la $env.WORKSPACE"
-                sh "ls -la ../"
+                echo "$WORKSPACE"
+                echo "$env.WORKSPACE"
                 sh "chmod +x ../push_images.sh"
                 sh "../push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
