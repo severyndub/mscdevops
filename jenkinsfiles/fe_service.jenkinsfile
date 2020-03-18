@@ -79,7 +79,7 @@ node {
             }
 
             stage("Login to Azure Container Registry"){
-                az acr login --name mcsdevopsentarch
+                sh "az acr login --name mcsdevopsentarch"
             }
 
             stage("Push Images") {
