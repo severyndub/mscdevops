@@ -78,8 +78,12 @@ node {
                 }
             }
 
+            stage("Login to Azure Container Registry"){
+                az acr login --name mcsdevopsentarch
+            }
+
             stage("Push Images") {
-                sh "chmod +x ./push_images.sh"
+                                sh "chmod +x ./push_images.sh"
                 sh "./push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
             }
