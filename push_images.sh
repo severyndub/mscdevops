@@ -9,8 +9,8 @@ if [ -z ${tag} ]; then
     echo tag must be given
     exit 1
 fi
-
-dockerRegistry=mcsdevopsentarch
+dockerRegName=mcsdevopsentarch
+dockerRegistry=mcsdevopsentarch.azurecr.io
 retryCount=1
 
 tryPushImage(){
@@ -18,7 +18,7 @@ tryPushImage(){
     tries=${retryCount}
 
     while [ ${tries} -gt 0 ]; do
-        az acr login --name ${dockerRegistry}
+        az acr login --name ${dockerRegName}
         echo ${DOCKER} push ${image}
         ${DOCKER} push ${image}
 
@@ -35,7 +35,7 @@ tryPushImage(){
 }
 
 main(){
-    docker tag ${tag} ${dockerRegistry}.azurecr.io/${tag}
+    docker tag ${tag} ${dockerRegistry}/${tag}
     dockerImageFullName=${dockerRegistry}/${tag}
     echo "finding images: '${dockerImageFullName}'"
 
