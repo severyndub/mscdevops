@@ -1,5 +1,3 @@
-//https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_WS/_git/EAD_CA1_WS
-
 #!groovy
 
 node {
