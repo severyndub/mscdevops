@@ -21,7 +21,7 @@
     - manageAks
 
 - name: Delete ACR secret if exist
-  shell: "kubectl delete secret; kubectl get secret {{ acrSecName }} | grep -o {{ acrSecName }}"
+  shell: "kubectl delete secret kubectl get secret {{ acrSecName }} | grep -o {{ acrSecName }}"
   when: acrSecName in kubernetesSecrets.stdout
   tags:
     - manageAks

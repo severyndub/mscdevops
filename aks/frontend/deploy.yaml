@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: fe-service
-        image: mcsdevopsentarch.azurecr.io/fe-service:latest
+        image: mcsdevopsentarch.azurecr.io/bp-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 22137
