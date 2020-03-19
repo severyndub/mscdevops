@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-buyerapi
+  name: svc-ws-service
   annotations:
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   ports:
-  - port: 4000
+  - port: 80
   selector:
-    app: e1buyerapi
+    app: ws-service

@@ -2,22 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fe-service
-  labels:
-    app: fe-service
+  name: ws-service
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: fe-service
   template:
     metadata:
       labels:
-        app: fe-service
+        app: ws-service
     spec:
       containers:
-      - name: fe-service
-        image: mcsdevopsentarch.azurecr.io/fe-service:latest
+      - name: ws-service
+        image: mcsdevopsentarch.azurecr.io/ws-service:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
       imagePullSecrets:
