@@ -1,1 +1,120 @@
 //https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_WS/_git/EAD_CA1_WS
+
+#!groovy
+
+node {
+
+    properties([disableConcurrentBuilds()])
+
+    String branchName = ""
+    String buildLabel = ""
+    boolean buildImages = false
+    String targetEnv = ""
+
+    try {
+
+        // is manual build
+        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
+        buildLabel = params.BUILD_LABEL?.trim()
+        buildImages = params.BUILD_IMAGES
+        //queueDeploy = params.QUEUE_DEPLOY
+        targetEnv = params.TARGET_ENV?.trim()
+        
+
+        if (!branchName) {
+            error("No branch name was given!")
+        }
+
+
+            if (buildImages) {
+                if (!buildLabel) {
+                    // label wasn't set manually
+                    buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
+                }
+                if (!buildLabel || buildLabel == "latest") {
+                    error("Build label must be specified!: '${buildLabel}'")
+                }
+                env.BUILD_LABEL = buildLabel // env variable needed in setting the version
+            }
+
+
+        echo """Parameters:
+    branchName: '${branchName}' 
+    buildLabel: '${buildLabel}' 
+    buildImages: '${buildImages}'
+    targetEnv: '${targetEnv}'
+"""
+
+        stage("Pull Source") {
+        //trying to get the hash without checkout gets the hash set in previous build.
+            def checkout = checkout scm
+            env.COMMIT_HASH = checkout.GIT_COMMIT
+            echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+        }
+
+        stage('Checkout frontend service') {
+            dir('wsservice') {
+                git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_WS/_git/EAD_CA1_WS'
+            }
+        }
+
+        //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
+        stage("Install npm dependencies") {
+            dir('wsservice') {
+                sh "mvn clean package"
+            }
+            echo "dependencies install completed"
+        }
+
+
+        if (buildImages) {
+
+            stage("Build Images") {
+                dir('wsservice') {
+                    echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
+
+                    sh "docker build -t ${buildLabel} ."
+
+                    echo "Docker containers built with tag '${buildLabel}'"
+                    sh "docker images | grep ${buildLabel}"
+                }
+            }
+
+            stage("Push Images") {
+                sh "chmod +x ./push_images.sh"
+                sh "./push_images.sh ${buildLabel}"
+                echo "Docker images pushed to repository"
+            }
+
+            // if (queueDeploy) {
+            //     stage("Queue deploy") {
+            //         String deployType = "REDEPLOY"
+
+            //         echo "Queueing Deploy job (${targetEnv}, ${buildLabel}, ${deployType})."
+
+            //         build job: "MIL-deploy",
+            //                 parameters: [
+            //                         string(name: 'TARGET_ENV', value: "${targetEnv}"),
+            //                         string(name: 'BUILD_LABEL', value: "${buildLabel}"),
+            //                         string(name: 'DEPLOY_TYPE', value: "${deployType}")
+            //                 ],
+            //                 wait: false
+            //     }
+            // }
+        }
+
+    } catch (e) {
+        throw e
+    } finally {
+        if (buildImages) {
+            stage("Clear Images") {
+                echo "Removing images with tag '${buildLabel}'"
+                sh "docker images | grep ${buildLabel}"
+                sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
+            }
+        }
+        // Recursively delete the current directory from the workspace
+        deleteDir()
+        echo "Build done."
+    }
+}
