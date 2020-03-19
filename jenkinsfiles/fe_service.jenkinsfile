@@ -15,7 +15,7 @@ node {
         branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
         buildLabel = params.BUILD_LABEL?.trim()
         buildImages = params.BUILD_IMAGES
-        //queueDeploy = params.QUEUE_DEPLOY
+        queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
         
 
@@ -39,6 +39,7 @@ node {
         echo """Parameters:
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}' 
+    queueDeploy: '${queueDeploy}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
 """
@@ -84,21 +85,29 @@ node {
                 echo "Docker images pushed to repository"
             }
 
-            // if (queueDeploy) {
-            //     stage("Queue deploy") {
-            //         String deployType = "REDEPLOY"
+            if (queueDeploy) {
+                stage("Queue deploy") {
 
-            //         echo "Queueing Deploy job (${targetEnv}, ${buildLabel}, ${deployType})."
+                    echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
 
-            //         build job: "MIL-deploy",
-            //                 parameters: [
-            //                         string(name: 'TARGET_ENV', value: "${targetEnv}"),
-            //                         string(name: 'BUILD_LABEL', value: "${buildLabel}"),
-            //                         string(name: 'DEPLOY_TYPE', value: "${deployType}")
-            //                 ],
-            //                 wait: false
-            //     }
-            // }
+                    withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
+                        // Login to azure
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        // Set subscription context
+                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                        // Set aks context
+                        sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
+                    }       
+
+                    // Navigate to fe-service deployment directory
+                    dir('aks/frontend'){
+                        // Deploy the service
+                        sh "kubectl apply -f deploy.yaml"
+                        // Deploy svc
+                        sh "kubectl apply -f service.yaml"
+                    }
+                }
+            }
         }
 
     } catch (e) {
