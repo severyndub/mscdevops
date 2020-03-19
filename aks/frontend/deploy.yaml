@@ -1,14 +1,14 @@
 ---
 apiVersion: v1
-kind: Pod
+kind: Deployment
 metadata:
-  name: frontend-service
+  name: ws-service
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: backendservice
+        app: ws-service
     spec:
       containers:
       - name: backendservice
