@@ -71,7 +71,7 @@ node {
                 dir('wsservice') {
                     echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
 
-                    sh "docker build -t ${buildLabel} ."
+                    sh "docker build -f Dockerfile-fat -t ${buildLabel} ."
 
                     echo "Docker containers built with tag '${buildLabel}'"
                     sh "docker images | grep ${buildLabel}"
