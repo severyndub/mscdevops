@@ -5,6 +5,9 @@ metadata:
   name: ws-service
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: ws-service
   template:
     metadata:
       labels:
