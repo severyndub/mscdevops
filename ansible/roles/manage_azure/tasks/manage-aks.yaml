@@ -21,7 +21,7 @@
     - manageAks
 
 - name: Delete ACR secret if exist
-  shell: "kubectl delete secret kubectl get secret myseckey | grep -o myseckey"
+  shell: "kubectl delete secret; kubectl get secret {{ acrSecName }} | grep -o {{ acrSecName }}"
   when: acrSecName in kubernetesSecrets.stdout
   tags:
     - manageAks
@@ -30,3 +30,5 @@
   shell: "kubectl create secret docker-registry {{ acrSecName }} --docker-server={{ dockerRegistry }} --docker-username={{ dockerUser }} --docker-password={{ vault_docker_pass }}"
   tags:
     - manageAks
+
+# kubectl create secret docker-registry myseckey --docker-server=mcsdevopsentarch.azurecr.io --docker-username=mcsdevopsentarch --docker-password=yR65w319=X16zp2KBjTbbtFXPF5Um8QG"
