@@ -1,37 +1,25 @@
+
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: backend-service
+  name: fe-service
+  labels:
+    app: fe-service
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: fe-service
   template:
     metadata:
       labels:
-        app: backendservice
+        app: fe-service
     spec:
       containers:
-      - name: backendservice
-        image: mcsdevopsentarch.azurecr.io/bp-service:latest
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "128Mi"
-          limits:
-            cpu: "1000m"
-            memory: "256Mi"
-        volumeMounts:
-        - mountPath: "/mnt/backendservice"
-          name: azurelogs
-        imagePullPolicy: Always
+      - name: fe-service
+        image: mcsdevopsentarch.azurecr.io/fe-service:latest
         ports:
-        - containerPort: 4000
-        #env:
-        # - name: AZURE_STORAGE_ACCOUNT_NAME
-        #   value: ""
-        # - name: AZURE_STORAGE_ACCOUNT_KEY
-        #   value: ""
-        # - name: AZURE_STORAGE_CONTAINER_NAME
-        #   value: "backendservice"
+        - containerPort: 80
       imagePullSecrets:
       - name: myseckey

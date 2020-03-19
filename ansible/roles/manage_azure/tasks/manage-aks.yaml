@@ -1,7 +1,4 @@
 ---
-
-
-
 - name: Az login
   shell: "az login --service-principal -u {{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id }}"
   tags:
