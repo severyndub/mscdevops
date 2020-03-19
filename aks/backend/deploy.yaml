@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: backendservice
-        image: mcsdevopsentarch.azurecr.io/backendservice:#BUILD#
+        image: mcsdevopsentarch.azurecr.io/bp-service:latest
         resources:
           requests:
             cpu: "500m"
