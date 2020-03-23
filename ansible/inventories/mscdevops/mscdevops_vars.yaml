@@ -20,8 +20,10 @@ devops:
     tags: "{'env':'devops'}"
   nsg:
     name: "devops"
+
 mscdevops:
-  tags: "{'env':'ca1'}"
+  tags: "{'env':'mscdevops'}"
+  
 environmentPrefix: "{{ env }}"
 
 #dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
