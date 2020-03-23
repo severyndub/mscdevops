@@ -5,3 +5,4 @@
     name: "{{ pip.name }}"
     allocation_method: static
     domain_name: mscdevops
+  tags: createVnet

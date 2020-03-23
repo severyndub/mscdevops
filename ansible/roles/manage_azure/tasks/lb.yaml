@@ -5,7 +5,7 @@
     name: "{{ lb.name }}"
     frontend_ip_configurations:
       - name: frontendipconf0
-        public_ip_address: testpip
+        public_ip_address: "{{ pip.name }}"
     backend_address_pools:
       - name: backendaddrpool0
     probes:
@@ -18,16 +18,17 @@
         frontend_port_range_start: 80
         frontend_port_range_end: 81
         backend_port: 8080
-    # load_balancing_rules:
-    #   - name: lbrbalancingrule0
-    #     frontend_ip_configuration: frontendipconf0
-    #     backend_address_pool: backendaddrpool0
-    #     frontend_port: 80
-    #     backend_port: 80
-    #     probe: prob0
+    load_balancing_rules:
+      - name: lbrbalancingrule0
+        frontend_ip_configuration: frontendipconf0
+        backend_address_pool: backendaddrpool0
+        frontend_port: 80
+        backend_port: 80
+        probe: prob0
     inbound_nat_rules:
       - name: inboundnatrule0
         backend_port: 8080
         protocol: Tcp
         frontend_port: 8080
         frontend_ip_configuration: frontendipconf0
+  tags: createVnet
