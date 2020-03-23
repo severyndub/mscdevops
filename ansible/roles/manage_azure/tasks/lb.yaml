@@ -9,15 +9,15 @@
     backend_address_pools:
       - name: backendaddrpool0
     probes:
-      - name: prob0
-        port: 80
+      - name: feservice
+        port: 8080
     inbound_nat_pools:
       - name: inboundnatpool0
         frontend_ip_configuration_name: frontendipconf0
         protocol: Tcp
-        frontend_port_range_start: 80
-        frontend_port_range_end: 81
-        backend_port: 8080
+        frontend_port_range_start: 8080
+        frontend_port_range_end: 8081
+        backend_port: 22137
     # load_balancing_rules:
     #   - name: lbrbalancingrule0
     #     frontend_ip_configuration: frontendipconf0
@@ -27,7 +27,7 @@
     #     probe: prob0
     inbound_nat_rules:
       - name: inboundnatrule0
-        backend_port: 8080
+        backend_port: 22137
         protocol: Tcp
         frontend_port: 8080
         frontend_ip_configuration: frontendipconf0
