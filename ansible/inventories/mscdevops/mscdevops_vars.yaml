@@ -47,17 +47,24 @@ aks:
 
 vnet:
   name: "{{ environmentPrefix }}-vnet"
-  rg: "{{ environmentPrefix }}-vnet-rg"
+  rg: "{{ environmentPrefix }}-network-rg"
+  networking:
+  dns: "8.8.8.8"
+  vnet_cidr: "10.110.0.0/16"
+  subnet:
+    aks: "10.110.10.0/24"
 
 nsg:
   name: "{{ environmentPrefix }}-security-nsg"
   rg: "{{ environmentPrefix }}-security-rg"
 
-networking:
-  dns: "8.8.8.8"
-  vnet_cidr: "10.110.0.0/16"
-  subnet:
-    aks: "10.110.10.0/24"
+lb:
+  name: "{{ environmentPrefix }}-lb"
+  rg: "vnet.rg"
+
+pip:
+  name: "{{ environmentPrefix }}-pip"
+  rg: "vnet.rg"
 
 ###########################Docker constant variables################################
 dockerRegistry:  "mcsdevopsentarch.azurecr.io"

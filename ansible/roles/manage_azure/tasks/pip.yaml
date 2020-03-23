@@ -1,0 +1,7 @@
+---
+- name: Create a public ip address
+  azure_rm_publicipaddress:
+    resource_group: "{{ vnet.rg }}"
+    name: "{{ pip.name }}"
+    allocation_method: static
+    domain_name: mscdevops

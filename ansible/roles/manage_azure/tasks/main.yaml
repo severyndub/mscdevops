@@ -23,13 +23,17 @@
   tags: 
     - createRg
 
-- name: Include tasks for creating vnets
+- name: Include tasks for creating network
   include_tasks: "{{ item }}"
   with_items:
     - "vnet.yaml"
+    - "lb.yaml"
+    - "pip.yaml"
   tags:
     - createVnet
     - deleteVnet
+
+
 
 - name: Include tasks for creating nsg
   include_tasks: "{{ item }}"

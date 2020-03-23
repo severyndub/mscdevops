@@ -4,7 +4,7 @@
     name: "{{ aks.subnet.name }}"
     resource_group: "{{ vnet.rg }}"
     virtual_network_name: "{{ vnet.name }}"
-    address_prefix_cidr: "{{ networking.subnet.aks }}"
+    address_prefix_cidr: "{{ vnet.networking.subnet.aks }}"
     security_group:
       name: "{{ nsg.name }}"
       resource_group: "{{ nsg.rg }}"
@@ -12,7 +12,7 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
-  when: ( networking.subnet is defined )
+  when: ( vnet.networking.subnet is defined )
   tags:
     - createSubnet
 
@@ -27,6 +27,6 @@
     client_id: "{{ az_client_id }}"
     tenant: "{{ az_tenant_id}}"
     secret: "{{ az_secret }}"
-  when: ( networking.subnet is defined )
+  when: ( vnet.networking.subnet is defined )
   tags:
     - deleteSubnet
