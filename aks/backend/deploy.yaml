@@ -4,8 +4,8 @@ kind: Deployment
 metadata:
   name: ws-service
   label:
-    app: ws-service
-    deployment: blue
+    # app: ws-service
+    # deployment: blue
 spec:
   replicas: 1
   selector:

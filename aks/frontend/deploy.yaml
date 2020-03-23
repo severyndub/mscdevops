@@ -4,8 +4,8 @@ kind: Deployment
 metadata:
   name: fe-service
   label:
-    app: fe-service
-    deployment: blue
+    # app: fe-service
+    # deployment: blue
 spec:
   replicas: 1
   selector:
