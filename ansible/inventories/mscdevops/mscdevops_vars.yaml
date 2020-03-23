@@ -23,7 +23,7 @@ devops:
 
 mscdevops:
   tags: "{'env':'mscdevops'}"
-  
+
 environmentPrefix: "{{ env }}"
 
 #dbUrl: "jdbc:sqlserver://{{ dbSrv }}:1433;database={{ dbName }};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"\
@@ -51,10 +51,10 @@ vnet:
   name: "{{ environmentPrefix }}-vnet"
   rg: "{{ environmentPrefix }}-network-rg"
   networking:
-  dns: "8.8.8.8"
-  vnet_cidr: "10.110.0.0/16"
-  subnet:
-    aks: "10.110.10.0/24"
+    dns: "8.8.8.8"
+    vnet_cidr: "10.110.0.0/16"
+    subnet:
+      aks: "10.110.10.0/24"
 
 nsg:
   name: "{{ environmentPrefix }}-security-nsg"
