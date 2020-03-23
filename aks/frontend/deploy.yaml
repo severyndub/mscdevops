@@ -4,18 +4,18 @@ kind: Deployment
 metadata:
   name: fe-service
   labels:
-    app: fe-service1
+    app: fe-service
     deployment: blue
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: fe-service2
-      deployment: blue
+      # app: fe-service2
+      # deployment: blue
   template:
     metadata:
       labels:
-        app: fe-service3
+        app: fe-service
         deployment: blue
     spec:
       containers:
