@@ -15,7 +15,7 @@ node {
         branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
         buildLabel = params.BUILD_LABEL?.trim()
         buildImages = params.BUILD_IMAGES
-        //queueDeploy = params.QUEUE_DEPLOY
+        queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
         
 
@@ -38,7 +38,8 @@ node {
 
         echo """Parameters:
     branchName: '${branchName}' 
-    buildLabel: '${buildLabel}' 
+    buildLabel: '${buildLabel}'
+    queueDeploy: '${queueDeploy}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
 """
@@ -120,7 +121,7 @@ node {
             }
         }
         // Recursively delete the current directory from the workspace
-        //deleteDir()
+        deleteDir()
         echo "Build done."
     }
 }
