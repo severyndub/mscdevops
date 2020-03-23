@@ -3,9 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ws-service
-  label:
-    # app: ws-service
-    # deployment: blue
+  labels:
+    app: ws-service
+    deployment: blue
 spec:
   replicas: 1
   selector:
