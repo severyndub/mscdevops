@@ -25,11 +25,11 @@
     #     frontend_port: 80
     #     backend_port: 80
     #     probe: prob0
-    inbound_nat_rules:
-      - name: inboundnatrule0
-        backend_port: 22137
-        protocol: Tcp
-        frontend_port: 8080
-        frontend_ip_configuration: frontendipconf0
+    # inbound_nat_rules:
+    #   - name: inboundnatrule0
+    #     backend_port: 22137
+    #     protocol: Tcp
+    #     frontend_port: 8080
+    #     frontend_ip_configuration: frontendipconf0
     tags: "{{ mscdevops.tags }}"
   tags: createVnet
