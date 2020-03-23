@@ -11,7 +11,7 @@ spec:
   selector:
     matchLabels:
       # app: fe-service2
-      # deployment: blue
+      deployment: blue
   template:
     metadata:
       labels:
