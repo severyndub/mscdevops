@@ -1,36 +1,56 @@
 ---
-apiVersion: apps/v1
-kind: Deployment
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: ws-service
+#   labels:
+#     app: ws-service
+#     deployment: blue
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: ws-service
+#       deployment: blue
+#   template:
+#     metadata:
+#       labels:
+#         app: ws-service
+#         deployment: blue
+#     spec:
+#       containers:
+#       - name: ws-service
+#         image: mcsdevopsentarch.azurecr.io/ws-service:latest
+#         resources:
+#           requests:
+#             cpu: 500m
+#             memory: 128Mi
+#           limits:
+#             cpu: 1000m
+#             memory: 256Mi
+#         ports:
+#         - containerPort: 4000
+#           name: http
+#           protocol: TCP
+#       imagePullSecrets:
+#       - name: myseckey
+
+apiVersion: v1
+kind: Pod
 metadata:
   name: ws-service
-  labels:
-    app: ws-service
-    deployment: blue
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ws-service
-      deployment: blue
-  template:
-    metadata:
-      labels:
-        app: ws-service
-        deployment: blue
-    spec:
-      containers:
-      - name: ws-service
-        image: mcsdevopsentarch.azurecr.io/ws-service:latest
-        resources:
-          requests:
-            cpu: 500m
-            memory: 128Mi
-          limits:
-            cpu: 1000m
-            memory: 256Mi
-        ports:
-        - containerPort: 4000
-          name: http
-          protocol: TCP
-      imagePullSecrets:
-      - name: myseckey
+  containers:  # auto tagged with "latest" on release build
+  - image: mcsdevopsentarch.azurecr.io/ws-service:latest
+    name: ws-service
+    resources:
+      requests:  #request a Pod with  a minimum of 0.5 of a core and 128 MB of memory
+        cpu: "500m"
+        memory: "128Mi"
+      limits:    #add a limit of 1.0 CPU and 256 MB of memory
+        cpu: "1000m"   
+        memory: "256Mi"    
+    ports:
+    - containerPort: 4000
+      name: http
+      protocol: TCP
