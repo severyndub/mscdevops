@@ -28,7 +28,6 @@ spec:
           limits:
             cpu: 1000m
             limits: 256Mi
-        #imagePullPolicy: Always
         ports:
         - containerPort: 4000
           name: http
