@@ -7,7 +7,8 @@ spec:
   ports:
     - name: http
       port: 80
-      targetPort: 80  selector:
+      targetPort: 80  
+  selector:
     app: ws-service
     deployment: blue
 # When deploying a new version, you can label it deployment: green. 
