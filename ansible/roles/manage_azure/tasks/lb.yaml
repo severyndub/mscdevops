@@ -1,5 +1,5 @@
 ---
-- name: create load balancer
+- name: Create load balancer
   azure_rm_loadbalancer:
     resource_group: "{{ vnet.rg }}"
     name: "{{ lb.name }}"

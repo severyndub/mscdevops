@@ -5,6 +5,17 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 22137
+    - name: http
+      port: 80
+      targetPort: 80
   selector:
     app: fe-service
+    deployment: blue
+
+# When deploying a new version, you can label it deployment: green. 
+# It won’t receive any traffic, even when it’s fully up and running, 
+# because the Service only sends traffic to blue Pods. 
+# You can test it and make sure it’s ready before making the cutover.
+# To switch over to the new Deployment, edit the Service to change the selector to
+# deployment: green. Now the new green Pods will start receiving traffic, and once all
+# the old blue Pods are idle, you can shut them down (or keep them running for easy rollback).
