@@ -106,7 +106,7 @@ node {
                         // Deploy the service
                         sh "DEPLOYMENT=${deploymentType} | kubectl apply -f deploy.yaml "
                         // Deploy svc
-                        sh "kubectl apply -f service.yaml"
+                        sh "DEPLOYMENT=${deploymentType} | kubectl apply -f service.yaml"
                     }
                 }
             }
