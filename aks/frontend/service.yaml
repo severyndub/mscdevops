@@ -10,7 +10,7 @@ spec:
       targetPort: 22137
   selector:
     app: fe-service
-    deployment: blue
+    deployment: ${DEPLOYMENT}
 
 # When deploying a new version, you can label it deployment: green. 
 # It won’t receive any traffic, even when it’s fully up and running, 

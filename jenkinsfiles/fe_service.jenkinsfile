@@ -8,6 +8,7 @@ node {
     String buildLabel = ""
     boolean buildImages = false
     String targetEnv = ""
+    String deploymentType = ""
 
     try {
 
@@ -17,6 +18,7 @@ node {
         buildImages = params.BUILD_IMAGES
         queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
+        deploymentType = params.DEPLOYMENT
         
 
         if (!branchName) {
@@ -102,7 +104,7 @@ node {
                     // Navigate to fe-service deployment directory
                     dir('aks/frontend'){
                         // Deploy the service
-                        sh "kubectl apply -f deploy.yaml"
+                        sh "DEPLOYMENT=${deploymentType} | kubectl apply -f deploy.yaml "
                         // Deploy svc
                         sh "kubectl apply -f service.yaml"
                     }

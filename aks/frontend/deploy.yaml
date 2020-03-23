@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fe-service
-  labels:
-    app: fe-service
-    deployment: blue
+  name: fe-service-${DEPLOYMENT}
+  # labels:
+  #   app: fe-service
+  #   deployment: ${DEPLOYMENT}
 spec:
   replicas: 1
   selector:
