@@ -104,9 +104,9 @@ node {
                     // Navigate to fe-service deployment directory
                     dir('aks/frontend'){
                         // Deploy the service
-                        sh "DEPLOYMENT=${deploymentType} | kubectl apply -f deploy.yaml "
+                        sh "kubectl apply -f deploy.yaml --DEPLOYMENT=${deploymentType}"
                         // Deploy svc
-                        sh "DEPLOYMENT=${deploymentType} | kubectl apply -f service.yaml"
+                        sh "kubectl apply -f service.yaml --DEPLOYMENT=${deploymentType}"
                     }
                 }
             }
