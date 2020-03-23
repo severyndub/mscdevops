@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: fe-service
   labels:
-    app: fe-service
+    app: fe-service1
     deployment: blue
 spec:
   replicas: 1
@@ -15,11 +15,11 @@ spec:
   template:
     metadata:
       labels:
-        app: fe-service
+        app: fe-service2
         deployment: blue
     spec:
       containers:
-      - name: fe-service
+      - name: fe-service3
         image: mcsdevopsentarch.azurecr.io/bp-service:latest
         resources:
           requests:
