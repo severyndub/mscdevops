@@ -14,7 +14,7 @@ node {
     try {
 
         // is manual build
-        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLower()
+        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLowerCase()
         buildLabel = params.BUILD_LABEL?.trim()
         buildNumber = params.BUILD_NUMBER?.trim()
         buildImages = params.BUILD_IMAGES
