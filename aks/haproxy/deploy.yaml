@@ -83,6 +83,7 @@ metadata:
   name: haproxy-configmap
   namespace: default
 data:
+  ssl-redirect: "OFF"
 
 ---
 apiVersion: apps/v1
@@ -184,14 +185,15 @@ metadata:
   name: haproxy-ingress
   namespace: haproxy-controller
 spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
   selector:
-    run: haproxy-ingress
-  type: NodePort
+    app: haproxy-ingress
   ports:
   - name: http
     port: 80
     protocol: TCP
-    targetPort: 80
+    targetPort: 22137
   - name: https
     port: 443
     protocol: TCP
