@@ -39,10 +39,10 @@ main(){
     echo $1
     echo $2
     dockerImageFullName=${dockerRegistry}/${imageName}.*${tag}    
-    
-    echo "Tag image"
+    dockerImageName="${imageName}:${tag}"
+    echo "Tag image with docker tag ${dockerImageName} ${dockerRegistry}/${dockerImageName}"
 
-    docker tag "${imageName}:${tag} ${dockerImageFullName}"
+    docker tag "${dockerImageName} ${dockerRegistry}/${dockerImageName}"
     
     echo "finding images: '${dockerImageFullName}'"
 
