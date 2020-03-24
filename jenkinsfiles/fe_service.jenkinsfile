@@ -109,9 +109,8 @@ node {
                     dir('aks/frontend'){
                         // Deploy the service
                         // envsubst '${DEPLOYMENT},DEPLOYMENT' <service.yaml
-                        sh "DEPLOYMENT=${deploymentType} \\ envsubst '${DEPLOYMENT},DEPLOYMENT' <deploy.yaml | kubectl apply -f -"
-                        // Deploy svc
-                        sh "DEPLOYMENT=${deploymentType} \\ envsubst '${DEPLOYMENT},DEPLOYMENT' <service.yaml | kubectl apply -f -"
+                        sh "kubectl apply -f deploy.yaml -f service.yaml -f ingress.yaml"
+                        
                     }
                 }
             }
