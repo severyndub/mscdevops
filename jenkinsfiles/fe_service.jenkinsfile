@@ -86,6 +86,7 @@ node {
 
             stage("Push Images") {
                 sh "chmod +x ./push_images.sh"
+                echo "${buildLabel}"
                 sh "./push_images.sh ${buildLabel}"
                 echo "Docker images pushed to repository"
             }
