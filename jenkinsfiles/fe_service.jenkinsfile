@@ -14,7 +14,7 @@ node {
     try {
 
         // is manual build
-        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLowerCase()
+        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLowerCase() //master
         buildLabel = params.BUILD_LABEL?.trim()
         buildNumber = params.BUILD_NUMBER?.trim()
         buildImages = params.BUILD_IMAGES
@@ -30,19 +30,22 @@ node {
 
 
             if (buildImages) {
-                if (!buildLabel || buildLabel == "latest") {
-                    error("Build label must be specified!: '${buildLabel}'")
+                if (!buildLabel) {
+                    error("Build label must be specified!: build label: '${buildLabel}'")
                 }
-                //buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
+                if (!buildNumber) {
+                    echo("Build number not specified, using latest instead.")
+                    buildNumber = "latest"
+                }
+                buildLabel = buildLabel.concat(':').concat(buildNumber)
                 env.BUILD_LABEL = buildLabel // env variable needed in setting the version
-
             }
 
 
         echo """Parameters:
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}'
-    buildNumber: '${nuildNumber}'
+    buildNumber: '${buildNumber}'
     queueDeploy: '${queueDeploy}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
@@ -68,7 +71,6 @@ node {
             }
             echo "dependencies install completed"
         }
-
 
         if (buildImages) {
 
