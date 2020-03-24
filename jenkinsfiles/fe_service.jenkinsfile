@@ -36,7 +36,8 @@ node {
                 if (!buildLabel || buildLabel == "latest") {
                     error("Build label must be specified!: '${buildLabel}'")
                 }
-                echo mainBranches[branchName]
+                echo "HELLO"
+                echo mainBranches
                 //buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
                 env.BUILD_LABEL = buildLabel // env variable needed in setting the version
 
