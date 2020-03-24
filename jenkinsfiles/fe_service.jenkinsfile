@@ -66,6 +66,8 @@ node {
         stage("Install npm dependencies") {
             dir('feservice') {
                 sh "npm install"
+                echo "List audit vulnerabilities:"
+                sh "npm audit"
             }
             echo "dependencies install completed"
         }

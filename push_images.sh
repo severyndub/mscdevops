@@ -37,7 +37,13 @@ tryPushImage(){
 
 main(){
     echo $1
+    echo $2
     dockerImageFullName=${dockerRegistry}/${imageName}.*${tag}    
+    
+    echo "Tag image"
+
+    docker tag "${imageName}:${tag} ${dockerImageFullName}"
+    
     echo "finding images: '${dockerImageFullName}'"
 
     images=($(docker images | grep ${dockerImageFullName} | awk '{printf "%s:%s\n", $1, $2}'))
