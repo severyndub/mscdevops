@@ -37,7 +37,6 @@ node {
                     buildVersion = "latest"
                 }
                 buildLabel = buildLabel + ':' + buildVersion
-                //env.BUILD_LABEL = buildLabel // env variable needed in setting the version
             }
 
         echo """Parameters:
@@ -80,10 +79,7 @@ node {
                     sh "docker build -t ${buildLabel} ."
 
                     echo "Docker containers built with tag '${buildLabel}'"
-                    sh "docker images | grep ${env.BUILD_LABEL}"
-
-                    // echo "docker tag ${buildLabel} mcsdevopsentarch.azurecr.io/${buildLabel}"
-                    // echo "docker push mcsdevopsentarch.azurecr.io/${buildLabel}"
+                    sh "docker images ${buildLabel}"
                 }
             }
 

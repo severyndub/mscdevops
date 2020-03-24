@@ -40,7 +40,7 @@ main(){
     dockerImageFullName=${dockerRegistry}/${tag}
     echo "finding images: '${dockerImageFullName}'"
 
-    images=($(docker images | grep ${dockerImageFullName} | awk '{printf "%s:%s\n", $1, $2}'))
+    images=($(docker images ${dockerImageFullName} | awk '{printf "%s:%s\n", $1, $2}'))
 
     echo found these images:
     echo ${images[@]}
