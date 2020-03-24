@@ -109,8 +109,7 @@ node {
                     dir('aks/frontend'){
                         // Deploy the service
                         // envsubst '${DEPLOYMENT},DEPLOYMENT' <service.yaml
-                        sh "kubectl apply -f deploy.yaml -f service.yaml -f ingress.yaml"
-                        
+                        sh "kubectl apply -f deploy.yaml -f service.yaml -f ingress.yaml" 
                     }
                 }
             }
@@ -122,8 +121,8 @@ node {
         if (buildImages && clearImages) {
             stage("Clear Images") {
                 echo "Removing images with tag '${buildLabel}'"
-                sh "docker images | grep ${buildLabel}"
-                sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
+                sh "docker images ${buildLabel}"
+                sh "docker rmi -f \$(docker images | grep '${env.BUILD_LABEL}' | awk '{print \$3}')"
             }
         }
         // Recursively delete the current directory from the workspace
