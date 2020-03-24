@@ -10,8 +10,8 @@ if [ -z ${tag} ]; then
     echo tag must be given
     exit 1
 fi
-
-dockerRegistry=gtbcp3.azurecr.io
+dockerRegName=mcsdevopsentarch
+dockerRegistry=mcsdevopsentarch.azurecr.io
 retryCount=3
 
 tryPushImage(){
@@ -19,6 +19,7 @@ tryPushImage(){
     tries=${retryCount}
 
     while [ ${tries} -gt 0 ]; do
+        az acr login --name ${dockerRegName}
         echo ${DOCKER} push ${image}
         ${DOCKER} push ${image}
 
