@@ -2,24 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fe-service
+  name: fe-service-${TARGET_ROLE}
   labels:
-    run: fe-service
+    app: fe-service
+    role: ${TARGET_ROLE}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: fe-service
+      app: fe-service
       version: 0.0.1
   template:
     metadata:
       labels:
-        run: fe-service
+        app: fe-service
         version: 0.0.1
     spec:
       containers:
       - name: fe-service
-        image: mcsdevopsentarch.azurecr.io/bp-service:0.0.1
+        image: mcsdevopsentarch.azurecr.io/bp-service:${BUILD_VERSION}
         resources:
           requests:
             cpu: 500m

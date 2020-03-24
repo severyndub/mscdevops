@@ -1,7 +1,11 @@
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
   name: svc-fe-service
+labels: 
+  app: fe-service
+  role: ${TARGET_ROLE}
+  env: prod
 spec:
   type: LoadBalancer
   ports:
@@ -10,8 +14,8 @@ spec:
       protocol: TCP
       targetPort: 22137
   selector:
-    run: fe-service
-    version: 0.0.1
+    app: fe-service
+    role: ${TARGET_ROLE}
 
 # When deploying a new version, you can label it deployment: green. 
 # It won’t receive any traffic, even when it’s fully up and running, 
