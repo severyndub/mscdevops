@@ -6,6 +6,7 @@ node {
 
     String branchName = ""
     String buildLabel = ""
+    String buildNumber = ""
     boolean buildImages = false
     String targetEnv = ""
     String deploymentType = ""
@@ -15,6 +16,7 @@ node {
         // is manual build
         branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
         buildLabel = params.BUILD_LABEL?.trim()
+        buildNumber = params.BUILD_NUMBER?.trim()
         buildImages = params.BUILD_IMAGES
         queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
