@@ -3,14 +3,15 @@
 DOCKER=docker
 type docker >/dev/null 2>&1 || export DOCKER=/usr/bin/docker
 
-tag=$1
+tag=$2
+imageName=$1
 
 if [ -z ${tag} ]; then
     echo tag must be given
     exit 1
 fi
-dockerRegName=mcsdevopsentarch
-dockerRegistry=mcsdevopsentarch.azurecr.io
+
+dockerRegistry=gtbcp3.azurecr.io
 retryCount=3
 
 tryPushImage(){
@@ -18,7 +19,6 @@ tryPushImage(){
     tries=${retryCount}
 
     while [ ${tries} -gt 0 ]; do
-        az acr login --name ${dockerRegName}
         echo ${DOCKER} push ${image}
         ${DOCKER} push ${image}
 
@@ -36,11 +36,10 @@ tryPushImage(){
 
 main(){
     echo $1
-    docker tag ${tag} ${dockerRegistry}/${tag}
-    dockerImageFullName=${dockerRegistry}/${tag}
+    dockerImageFullName=${dockerRegistry}/${imageName}.*${tag}    
     echo "finding images: '${dockerImageFullName}'"
 
-    images=($(docker images ${dockerImageFullName} | awk '{printf "%s:%s\n", $1, $2}'))
+    images=($(docker images | grep ${dockerImageFullName} | awk '{printf "%s:%s\n", $1, $2}'))
 
     echo found these images:
     echo ${images[@]}
