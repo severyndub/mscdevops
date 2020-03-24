@@ -6,7 +6,7 @@ node {
 
     String branchName = ""
     String buildLabel = ""
-    String buildNumber = ""
+    String buildVersion = ""
     boolean buildImages = false
     String targetEnv = ""
     String deploymentType = ""
@@ -16,36 +16,32 @@ node {
         // is manual build
         branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLowerCase() //master
         buildLabel = params.BUILD_LABEL?.trim()
-        buildNumber = params.BUILD_NUMBER?.trim()
+        buildVersion = params.BUILD_VERSION?.trim()
         buildImages = params.BUILD_IMAGES
         queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
         deploymentType = params.DEPLOYMENT
         
-        echo branchName
-
         if (!branchName) {
             error("No branch name was given!")
         }
-
 
             if (buildImages) {
                 if (!buildLabel) {
                     error("Build label must be specified!: build label: '${buildLabel}'")
                 }
-                if (!buildNumber) {
+                if (!buildVersion) {
                     echo("Build number not specified, using latest instead.")
-                    buildNumber = "latest"
+                    buildVersion = "latest"
                 }
-                buildLabel = buildLabel.concat(':').concat(buildNumber)
+                buildLabel = buildLabel + ':' + buildVersion
                 env.BUILD_LABEL = buildLabel // env variable needed in setting the version
             }
-
 
         echo """Parameters:
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}'
-    buildNumber: '${buildNumber}'
+    buildVersion: '${buildVersion}'
     queueDeploy: '${queueDeploy}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
