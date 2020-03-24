@@ -47,6 +47,7 @@ node {
     queueDeploy: '${queueDeploy}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
+    clearImages: '${clearImages}'
 """
 
         stage("Pull Source") {
