@@ -32,7 +32,7 @@ node {
                 if (!buildLabel) {
                     error("Build label must be specified!: build label: '${buildLabel}'")
                 }
-                if (!buildVersion) {
+                if (!buildVersion || buildVersion == "") {
                     echo("Build number not specified, using latest instead.")
                     buildVersion = "latest"
                 }
