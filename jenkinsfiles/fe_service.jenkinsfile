@@ -14,7 +14,7 @@ node {
     try {
 
         // is manual build
-        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
+        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLower()
         buildLabel = params.BUILD_LABEL?.trim()
         buildNumber = params.BUILD_NUMBER?.trim()
         buildImages = params.BUILD_IMAGES
@@ -22,6 +22,7 @@ node {
         targetEnv = params.TARGET_ENV?.trim()
         deploymentType = params.DEPLOYMENT
         
+        echo branchName
 
         if (!branchName) {
             error("No branch name was given!")
@@ -29,15 +30,9 @@ node {
 
 
             if (buildImages) {
-                if (!buildLabel) {
-                    // label wasn't set manually
-                    buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
-                }
                 if (!buildLabel || buildLabel == "latest") {
                     error("Build label must be specified!: '${buildLabel}'")
                 }
-                echo "HELLO"
-                echo mainBranches
                 //buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
                 env.BUILD_LABEL = buildLabel // env variable needed in setting the version
 
