@@ -67,7 +67,7 @@ node {
             dir('feservice') {
                 sh "npm install"
                 echo "List audit vulnerabilities:"
-                sh "npm audit"
+                //sh "npm audit"
             }
             echo "dependencies install completed"
         }
