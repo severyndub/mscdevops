@@ -10,6 +10,7 @@ node {
     boolean buildImages = false
     String targetEnv = ""
     String deploymentType = ""
+    boolean clearImages = true
 
     try {
 
@@ -21,6 +22,7 @@ node {
         queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
         deploymentType = params.DEPLOYMENT
+        clearImages = params.CLEAR_IMAGES
         
         if (!branchName) {
             error("No branch name was given!")
@@ -116,7 +118,7 @@ node {
     } catch (e) {
         throw e
     } finally {
-        if (buildImages) {
+        if (buildImages && clearImages) {
             stage("Clear Images") {
                 echo "Removing images with tag '${buildLabel}'"
                 sh "docker images | grep ${buildLabel}"
