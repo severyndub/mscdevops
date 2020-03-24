@@ -81,15 +81,18 @@ node {
 
                     echo "Docker containers built with tag '${buildLabel}'"
                     sh "docker images | grep ${buildLabel}"
+
+                    sh "docker tag ${buildLabel} mcsdevopsentarch.azurecr.io/${buildLabel}"
+                    sh "docker push mcsdevopsentarch.azurecr.io/${buildLabel}"
                 }
             }
 
-            stage("Push Images") {
-                sh "chmod +x ./push_images.sh"
-                echo "${buildLabel}"
-                sh "./push_images.sh ${buildLabel}"
-                echo "Docker images pushed to repository"
-            }
+            // stage("Push Images") {
+            //     sh "chmod +x ./push_images.sh"
+            //     echo "${buildLabel}"
+            //     sh "./push_images.sh ${buildLabel}"
+            //     echo "Docker images pushed to repository"
+            // }
 
             if (queueDeploy) {
                 stage("Queue deploy") {
