@@ -42,7 +42,7 @@ main(){
     dockerImageName="${imageName}:${tag}"
     echo "Tag image with docker tag ${dockerImageName} ${dockerRegistry}/${dockerImageName}"
 
-    docker tag "${dockerImageName} ${dockerRegistry}/${dockerImageName}"
+    docker tag ${dockerImageName} ${dockerRegistry}/${dockerImageName}
     
     echo "finding images: '${dockerImageFullName}'"
 
