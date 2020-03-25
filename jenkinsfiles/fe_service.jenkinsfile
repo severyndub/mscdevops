@@ -96,6 +96,27 @@ node {
 
                     echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
 
+                    acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
+                        resourceGroupName: 'mscdevops-aks-rg',
+                        containerService: 'mscdevops-aks | AKS',
+                        sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
+                        configFilePaths: '**/frontend/*.yaml',
+                        enableConfigSubstitution: true,
+          
+          // Kubernetes
+          secretName: 'mscdevops',
+          secretNamespace: 'default',
+          
+          // Docker Swarm
+          swarmRemoveContainersFirst: true,
+          
+          // DC/OS Marathon
+          //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+          
+          containerRegistryCredentials: [
+              [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io']
+          ])
+
                     withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
                         // Login to azure
                         sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
@@ -109,7 +130,7 @@ node {
                     dir('aks/frontend'){
                         // Deploy the service
                         // envsubst '${DEPLOYMENT},DEPLOYMENT' <service.yaml
-                        sh "kubectl apply -f deploy.yaml -f service.yaml -f ingress.yaml" 
+                        //sh "kubectl apply -f deploy.yaml -f service.yaml -f ingress.yaml" 
                     }
                 }
             }

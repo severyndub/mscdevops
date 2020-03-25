@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fe-service
+  name: fe-service-${TARGET_ROLE}
   labels:
     app: fe-service
     deployment: ${TARGET_ROLE}
