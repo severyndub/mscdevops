@@ -104,8 +104,8 @@ node {
                         enableConfigSubstitution: true,
           
           // Kubernetes
-          //secretName: 'mscdevops',
-          //secretNamespace: '<secret-namespace>',
+          secretName: 'mscdevops',
+          secretNamespace: 'default',
           
           // Docker Swarm
           //swarmRemoveContainersFirst: true,
