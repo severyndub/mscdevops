@@ -7,7 +7,7 @@
 
 - name: Test uuid var
   debug:
-    msg: "{{ uuid[0:20] }}"
+    msg: "{{ uuid[0:19] }}"
   tags: createAks
 
 
@@ -25,7 +25,7 @@
       client_id: "{{ aks.client.id }}"
       client_secret: "{{ aks.client.secret }} "
     agent_pool_profiles:
-      - name: "{{ uuid[0:20] }}"
+      - name: "{{ uuid[0:19] }}"
         count: 1
         vm_size: Standard_B2s
     tags: "{{ mscdevops.tags }}"
