@@ -1,13 +1,13 @@
 ---
 - name: set uuid variable
   set_fact:
-    uuid: "mscdevops_agent_{{ 99999999 | random | to_uuid }}"
+    uuid: "agent_pool_{{ 99999999 | random | to_uuid }}"
   tags:
   - createAks
 
 - name: Test uuid var
   debug:
-    msg: "{{ uuid[0:22] }}"
+    msg: "{{ uuid[0:20] }}"
   tags: createAks
 
 
@@ -25,7 +25,7 @@
       client_id: "{{ aks.client.id }}"
       client_secret: "{{ aks.client.secret }} "
     agent_pool_profiles:
-      - name: "{{ uuid[0:22] }}"
+      - name: "{{ uuid[0:20] }}"
         count: 1
         vm_size: Standard_B2s
     tags: "{{ mscdevops.tags }}"
