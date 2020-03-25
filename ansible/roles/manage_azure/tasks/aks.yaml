@@ -1,13 +1,13 @@
 ---
 - name: set uuid variable
   set_fact:
-    uuid: "mscdevops-agent-{{ 99999999 | random | to_uuid | substring(0,5) }}"
+    uuid: "mscdevops-agent-{{ 99999999 | random | to_uuid }}"
   tags:
   - createAks
 
 - name: Test uuid var
   debug:
-    msg: "{{ uuid }}"
+    msg: "{{ uuid[0:5] }}"
   tags: createAks
 
 
