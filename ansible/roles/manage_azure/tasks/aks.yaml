@@ -1,4 +1,9 @@
 ---
+debug:
+  msg: "mscdevops-agent-{{ 99999999 | random | to_uuid }}"
+tags:
+  - createAks
+
 - name: Create a managed Azure Container Services (AKS) instance
   azure_rm_aks:
     name: "{{ aks.name }}"
