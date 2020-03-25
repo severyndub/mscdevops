@@ -108,13 +108,13 @@ node {
           secretNamespace: 'default',
           
           // Docker Swarm
-          //swarmRemoveContainersFirst: true,
+          swarmRemoveContainersFirst: true,
           
           // DC/OS Marathon
           //dcosDockerCredentialsPath: '<dcos-credentials-path>',
           
           containerRegistryCredentials: [
-              [credentialsId: 'mcsdevopsentarch', url: 'mcsdevopsentarch.azurecr.io']
+              [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io']
           ])
 
                     withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
