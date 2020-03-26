@@ -19,6 +19,7 @@
     - ../inventories/{{ env }}/{{ env }}_vars.yaml
     - ../inventories/{{ env }}/{{ env }}_vault.yaml
     - ./vars/ips.yaml
+  remote_user: root
   tasks:
 
   - name: Login to azure by az login
