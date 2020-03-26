@@ -1,9 +1,11 @@
 ---
 apiVersion: v1
 kind: Service
-apiVersion: v1
 metadata:
   name: svc-fe-service-${TARGET_ROLE}
+labels:
+  app: fe-service
+  role: ${TARGET_ROLE}
 spec:
   type: LoadBalancer
   ports:

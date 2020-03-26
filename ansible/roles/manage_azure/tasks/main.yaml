@@ -33,8 +33,6 @@
     - createVnet
     - deleteVnet
 
-
-
 - name: Include tasks for creating nsg
   include_tasks: "{{ item }}"
   with_items:

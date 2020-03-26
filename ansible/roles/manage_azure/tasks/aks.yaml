@@ -1,4 +1,16 @@
 ---
+- name: set uuid variable
+  set_fact:
+    uuid: "agent_pool_{{ 99999999 | random | to_uuid }}"
+  tags:
+  - createAks
+
+- name: Test uuid var
+  debug:
+    msg: "{{ uuid[0:19] }}"
+  tags: createAks
+
+
 - name: Create a managed Azure Container Services (AKS) instance
   azure_rm_aks:
     name: "{{ aks.name }}"
@@ -13,7 +25,7 @@
       client_id: "{{ aks.client.id }}"
       client_secret: "{{ aks.client.secret }} "
     agent_pool_profiles:
-      - name: mscdevops-agent-pool
+      - name: default
         count: 1
         vm_size: Standard_B2s
     tags: "{{ mscdevops.tags }}"
