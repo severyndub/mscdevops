@@ -30,16 +30,16 @@ node {
             error("No branch name was given!")
         }
 
-            if (buildImages) {
-                if (!buildLabel) {
-                    error("Build label must be specified!: build label: '${buildLabel}'")
-                }
-                if (!buildVersion || buildVersion == "") {
-                    echo("Build number not specified, using latest instead.")
-                    buildVersion = "latest"
-                }
-                buildLabel = buildLabel + ':' + buildVersion
+        if (buildImages) {
+            if (!buildLabel) {
+                error("Build label must be specified!: build label: '${buildLabel}'")
             }
+            if (!buildVersion || buildVersion == "") {
+                echo("Build number not specified, using latest instead.")
+                buildVersion = "latest"
+            }
+            buildLabel = buildLabel + ':' + buildVersion
+        }
 
         echo """Parameters:
     branchName: '${branchName}' 
@@ -53,6 +53,7 @@ node {
     deleteAksDeployment: '${deleteAksDeployment}'
 """
 
+    if(!deleteAksDeployment){
         stage("Pull Source") {
         //trying to get the hash without checkout gets the hash set in previous build.
             def checkout = checkout scm
@@ -94,8 +95,9 @@ node {
                 sh "./push_images.sh ${env.BUILD_LABEL} ${buildVersion}"
                 echo "Docker images pushed to repository"
             }
-
-        if (queueAksDeployment) {
+    }
+    
+    if (queueAksDeployment && !deleteAksDeployment) {
             stage("Queue deploy") {
 
                 echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
@@ -122,23 +124,23 @@ node {
             ])
             }
         }
+    }
 
-        if(deleteAksDeployment){
-            
-            withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
-                // Login to azure
-                sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                // Set subscription context
-                sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                // Set aks context
-                sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
+    if(deleteAksDeployment){
+        
+        withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
+            // Login to azure
+            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+            // Set subscription context
+            sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+            // Set aks context
+            sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
 
-                // Navigate to fe-service deployment directory
-                dir('aks/frontend'){
-                // Deploy the service
-                sh "kubectl delete deployment fe-service-${deploymentType}"
-                sh "kubectl delete services svc-fe-service-${deploymentType}"
-                }
+            // Navigate to fe-service deployment directory
+            dir('aks/frontend'){
+            // Deploy the service
+            sh "kubectl delete deployment fe-service-${deploymentType}"
+            sh "kubectl delete services svc-fe-service-${deploymentType}"
             }
         }
     }
