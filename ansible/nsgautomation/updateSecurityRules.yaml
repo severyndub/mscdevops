@@ -1,8 +1,7 @@
----
-- name: Security AutoAdding IP
-  hosts: localhost
+- hosts: localhost
   gather_facts: no
   connection: local
+  become: no
   vars:
     webHttpPort:
       - 80
@@ -15,12 +14,18 @@
       - 8080
     mongoDbPort:
       - 1433
+    ansible_connection: local
+    env: mscdevops
   vars_files:
     - ../inventories/{{ env }}/{{ env }}_vars.yaml
     - ../inventories/{{ env }}/{{ env }}_vault.yaml
     - ./vars/ips.yaml
   remote_user: root
   tasks:
+
+  - name: check vars
+    debug:
+      msg: "{{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id}}"
 
   - name: Login to azure by az login
     shell: "az login --service-principal -u {{ az_client_id }} -p {{ az_secret }} -t {{ az_tenant_id}}"
