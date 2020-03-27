@@ -21,7 +21,7 @@ node {
         buildImages = params.BUILD_IMAGES
         queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
-        deploymentType = params.DEPLOYMENT
+        deploymentType = params.TARGET_ROLE?.trim()
         clearImages = params.CLEAR_IMAGES
         
         if (!branchName) {
@@ -47,6 +47,8 @@ node {
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
     clearImages: '${clearImages}'
+    deploymentType: '${deploymentType}'
+
 """
 
         stage("Pull Source") {
