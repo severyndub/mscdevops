@@ -104,39 +104,21 @@ node {
                         configFilePaths: '**/backend/*.yaml',
                         enableConfigSubstitution: true,
 
-          // Kubernetes
-          secretName: 'mscdevops',
-          secretNamespace: 'default',
-          
-          // Docker Swarm
-          swarmRemoveContainersFirst: true,
-          
-          // DC/OS Marathon
-          //dcosDockerCredentialsPath: '<dcos-credentials-path>',
-          
-          containerRegistryCredentials: [
-              [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io']
-          ])
-  
-                    //     withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
-                    //     // Login to azure
-                    //     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                    //     // Set subscription context
-                    //     sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                    //     // Set aks context
-                    //     sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
-                    // }             
+                    // Kubernetes
+                    secretName: 'mscdevops',
+                    secretNamespace: 'default',
 
-                    // // Navigate to fe-service deployment directory
-                    // dir('aks/backend'){
-                    //     // Deploy the service
-                    //     sh "kubectl apply -f deploy.yaml"
-                    //     // Deploy svc
-                    //     sh "kubectl apply -f service.yaml"
-                    }
+                    // Docker Swarm
+                    swarmRemoveContainersFirst: true,
+
+                    // DC/OS Marathon
+                    //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+
+                    containerRegistryCredentials: [
+                        [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
                 }
-            }                   
-        }
+            }
+        }                   
 
     } catch (e) {
         throw e
