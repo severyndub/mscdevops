@@ -23,7 +23,7 @@ node {
         stage("Run ansible"){
 
             // Run ansible to create resource groups
-            sh "sudo ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --extra-vars env=${targetEnv} --vault-password-file ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3'"
+            sh "ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --extra-vars env=${targetEnv} --vault-password-file ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3'"
         }
 
     } catch (e) {
