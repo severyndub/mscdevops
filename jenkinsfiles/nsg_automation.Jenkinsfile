@@ -4,15 +4,7 @@ node {
 
     properties([disableConcurrentBuilds()])
 
-    String targetEnv = ""
-
     try {
-        targetEnv = params.TARGET_ENV?.trim()
-
-        echo """Parameters:
-            targetEnv: '${targetEnv}'
-            """
-
         stage("Pull Source") {
         //trying to get the hash without checkout gets the hash set in previous build.
             def checkout = checkout scm
@@ -21,7 +13,6 @@ node {
         }
 
         stage("Run ansible"){
-
             // Run ansible to create resource groups
             sh "ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --vault-password-file ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3'"
         }
