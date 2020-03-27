@@ -11,6 +11,7 @@ node {
     String targetEnv = ""
     String deploymentType = ""
     boolean clearImages = true
+    boolean deleteAksDeployment = false
 
     try {
 
@@ -19,10 +20,11 @@ node {
         buildLabel = params.BUILD_LABEL?.trim()
         buildVersion = params.BUILD_VERSION?.trim()
         buildImages = params.BUILD_IMAGES
-        queueDeploy = params.QUEUE_DEPLOY
+        queueAksDeployment = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
         deploymentType = params.TARGET_ROLE?.trim()
         clearImages = params.CLEAR_IMAGES
+        deleteAksDeployment = params.CLEAN_AKS
         
         if (!branchName) {
             error("No branch name was given!")
@@ -43,12 +45,12 @@ node {
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}'
     buildVersion: '${buildVersion}'
-    queueDeploy: '${queueDeploy}'
+    queueAksDeployment: '${queueAksDeployment}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
     clearImages: '${clearImages}'
     deploymentType: '${deploymentType}'
-
+    deleteAksDeployment: '${deleteAksDeployment}'
 """
 
         stage("Pull Source") {
@@ -93,50 +95,53 @@ node {
                 echo "Docker images pushed to repository"
             }
 
-            if (queueDeploy) {
-                stage("Queue deploy") {
+        if (queueAksDeployment) {
+            stage("Queue deploy") {
 
-                    echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
+                echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
 
-                    acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
-                        resourceGroupName: 'mscdevops-aks-rg',
-                        containerService: 'mscdevops-aks | AKS',
-                        sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
-                        configFilePaths: '**/frontend/*.yaml',
-                        enableConfigSubstitution: true,
+                acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
+                    resourceGroupName: 'mscdevops-aks-rg',
+                    containerService: 'mscdevops-aks | AKS',
+                    sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
+                    configFilePaths: '**/frontend/*.yaml',
+                    enableConfigSubstitution: true,
           
-          // Kubernetes
-          secretName: 'mscdevops',
-          secretNamespace: 'default',
-          
-          // Docker Swarm
-          swarmRemoveContainersFirst: true,
-          
-          // DC/OS Marathon
-          //dcosDockerCredentialsPath: '<dcos-credentials-path>',
-          
-          containerRegistryCredentials: [
-              [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io']
-          ])
+                // Kubernetes
+                secretName: 'mscdevops',
+                secretNamespace: 'default',
 
-                    withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
-                        // Login to azure
-                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                        // Set subscription context
-                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                        // Set aks context
-                        sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
-                    }       
+                // Docker Swarm
+                swarmRemoveContainersFirst: true,
 
-                    // Navigate to fe-service deployment directory
-                    dir('aks/frontend'){
-                        // Deploy the service
-                        // envsubst '${DEPLOYMENT},DEPLOYMENT' <service.yaml
-                        //sh "kubectl apply -f deploy.yaml -f service.yaml -f ingress.yaml" 
-                    }
+                // DC/OS Marathon
+                //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+
+                containerRegistryCredentials: [
+                    [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io']
+            ])
+            }
+        }
+
+        if(deleteAksDeployment){
+            
+            withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
+                // Login to azure
+                sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                // Set subscription context
+                sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                // Set aks context
+                sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
+
+                // Navigate to fe-service deployment directory
+                dir('aks/frontend'){
+                // Deploy the service
+                sh "kubectl delete deployment fe-service-${deploymentType}"
+                sh "kubectl delete services svc-fe-service-${deploymentType}"
                 }
             }
         }
+    }
 
     } catch (e) {
         throw e
