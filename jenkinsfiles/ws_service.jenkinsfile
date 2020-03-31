@@ -6,42 +6,49 @@ node {
 
     String branchName = ""
     String buildLabel = ""
+    String buildVersion = ""
     boolean buildImages = false
     String targetEnv = ""
+    String deploymentType = ""
+    boolean clearImages = true
 
     try {
 
         // is manual build
-        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "")
+        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLowerCase()
         buildLabel = params.BUILD_LABEL?.trim()
+        buildVersion = params.BUILD_VERSION?.trim()
         buildImages = params.BUILD_IMAGES
         queueDeploy = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
+        deploymentType = params.TARGET_ROLE?.trim()
+        clearImages = params.CLEAR_IMAGES
         
 
         if (!branchName) {
             error("No branch name was given!")
         }
 
-
             if (buildImages) {
                 if (!buildLabel) {
-                    // label wasn't set manually
-                    buildLabel = mainBranches[branchName].labelFormat?.replaceFirst("\\{VERSION_TAG\\}", "${env.BUILD_NUMBER}")
+                    error("Build label must be specified!: build label: '${buildLabel}'")
                 }
-                if (!buildLabel || buildLabel == "latest") {
-                    error("Build label must be specified!: '${buildLabel}'")
+                if (!buildVersion || buildVersion == "") {
+                    echo("Build number not specified, using latest instead.")
+                    buildVersion = "latest"
                 }
-                env.BUILD_LABEL = buildLabel // env variable needed in setting the version
+                buildLabel = buildLabel + ':' + buildVersion
             }
-
 
         echo """Parameters:
     branchName: '${branchName}' 
     buildLabel: '${buildLabel}'
+    buildVersion: '${buildVersion}'
     queueDeploy: '${queueDeploy}'
     buildImages: '${buildImages}'
     targetEnv: '${targetEnv}'
+    clearImages: '${clearImages}'
+    deploymentType: '${deploymentType}'
 """
 
         stage("Pull Source") {
@@ -75,13 +82,13 @@ node {
                     sh "docker build -f Dockerfile-hollow -t ${buildLabel} ."
 
                     echo "Docker containers built with tag '${buildLabel}'"
-                    sh "docker images | grep ${buildLabel}"
+                    sh "docker images ${buildLabel}"
                 }
             }
 
             stage("Push Images") {
                 sh "chmod +x ./push_images.sh"
-                sh "./push_images.sh ${buildLabel}"
+                sh "./push_images.sh ${env.BUILD_LABEL} ${buildVersion}"
                 echo "Docker images pushed to repository"
             }
 
@@ -90,34 +97,37 @@ node {
 
                     echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
 
-                    withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
-                        // Login to azure
-                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                        // Set subscription context
-                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                        // Set aks context
-                        sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
-                    }             
+                    acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
+                        resourceGroupName: 'mscdevops-aks-rg',
+                        containerService: 'mscdevops-aks | AKS',
+                        sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
+                        configFilePaths: '**/backend/*.yaml',
+                        enableConfigSubstitution: true,
 
-                    // Navigate to fe-service deployment directory
-                    dir('aks/backend'){
-                        // Deploy the service
-                        sh "kubectl apply -f deploy.yaml"
-                        // Deploy svc
-                        sh "kubectl apply -f service.yaml"
-                    }
+                    // Kubernetes
+                    secretName: 'mscdevops',
+                    secretNamespace: 'default',
+
+                    // Docker Swarm
+                    swarmRemoveContainersFirst: true,
+
+                    // DC/OS Marathon
+                    //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+
+                    containerRegistryCredentials: [
+                        [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
                 }
-            }                   
-        }
+            }
+        }                   
 
     } catch (e) {
         throw e
     } finally {
-        if (buildImages) {
+        if (buildImages && clearImages) {
             stage("Clear Images") {
                 echo "Removing images with tag '${buildLabel}'"
-                sh "docker images | grep ${buildLabel}"
-                sh "docker rmi -f \$(docker images | grep '${buildLabel}' | awk '{print \$3}')"
+                sh "docker images ${buildLabel}"
+                sh "docker rmi -f \$(docker images | grep '${env.BUILD_LABEL}' | awk '{print \$3}')"
             }
         }
         // Recursively delete the current directory from the workspace
