@@ -12,7 +12,7 @@
 ansible_python_interpreter: /usr/bin/python3
 
 ###########################Azure variables#########################################
-azureSubId: "131f79c1-67a0-4989-b698-a131af549e69"
+azureSubId: 131f79c1-67a0-4989-b698-a131af549e69
 location: "westeurope"
 devops:
   rg:
@@ -74,4 +74,4 @@ dockerImage: "{{ dockerRegistry }}/mscdevopsca1/{{dockerImageName}}"
 dockerTag: "{{ dockerImageTagVar }}"
 dockerUser: mcsdevopsentarch
 
-acrSecName: "myseckey"
+acrSecName: myseckey
