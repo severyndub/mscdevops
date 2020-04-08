@@ -69,9 +69,15 @@ node {
             dir('wsservice') {
                 sh "mvn clean package"
             }
-            echo "dependencies install completed"
+            echo "dependencies install completed"            
         }
 
+        stage('Update configuration'){
+            configFileProvider([configFile(fileId: '/src/main/resources/config.properties', targetLocation: 'databaseUrl', variable: 'mongodb+srv://dbuser:b4TD7SQTJUXvVJE8@cluster0-9g35k.azure.mongodb.net/test?retryWrites=true&w=majority')]) {
+                // some block
+                echo "password updated"
+            }
+        }
 
         if (buildImages) {
 
