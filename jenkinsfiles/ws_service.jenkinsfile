@@ -67,16 +67,11 @@ node {
         //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
         stage("Install npm dependencies") {
             dir('wsservice') {
-                sh "mvn clean package"
+                configFileProvider([configFile(fileId: 'ae106d79-9e5d-4d2c-86f2-2f1827f8606f', replaceTokens: true, targetLocation: 'src/main/resources/config.properties', variable: 'databaseUrl')]) {
+                    sh "mvn -s clean package"
+                }
             }
             echo "dependencies install completed"            
-        }
-
-        stage('Update configuration'){
-            configFileProvider([configFile(fileId: '/src/main/resources/config.properties', targetLocation: 'databaseUrl', variable: 'mongodb+srv://dbuser:b4TD7SQTJUXvVJE8@cluster0-9g35k.azure.mongodb.net/test?retryWrites=true&w=majority')]) {
-                // some block
-                echo "password updated"
-            }
         }
 
         if (buildImages) {
