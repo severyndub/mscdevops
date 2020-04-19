@@ -7,6 +7,7 @@
     def deleteAksDeployment = false
     def branch = env.GIT_BRANCH?.trim().split('/').last().toLowerCase() //master
     def overrideVersion = params.BUILD_VERSION_OVERRIDE?.trim()
+    def override = false
 
 node {
 
@@ -31,6 +32,7 @@ node {
         }else if (overrideVersion != "1.0.0.0") {    
             env.BUILD_VERSION = overrideVersion
             buildImages = false
+            override = true
         }
 
         env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
@@ -91,40 +93,39 @@ node {
                         sh "docker images ${env.BUILD_LABEL}"
                     }
                 }
-            }
-            stage("Push Images") {
-                sh "chmod +x ./push_images.sh"
-                sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
-                echo "Docker images pushed to repository"
-            }
-            if (queueAksDeployment) {
-                    stage("Queue deploy") {
-                    
-                        echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
-    
-                        acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
-                            resourceGroupName: 'mscdevops-aks-rg',
-                            containerService: 'mscdevops-aks | AKS',
-                            sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
-                            configFilePaths: '**/frontend/*.yaml',
-                            enableConfigSubstitution: true,
-    
-                        // Kubernetes
-                        secretName: 'mscdevops',
-                        secretNamespace: 'default',
-    
-                        // Docker Swarm
-                        swarmRemoveContainersFirst: true,
-    
-                        // DC/OS Marathon
-                        //dcosDockerCredentialsPath: '<dcos-credentials-path>',
-    
-                        containerRegistryCredentials: [
-                            [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
-                    }
+                stage("Push Images") {
+                    sh "chmod +x ./push_images.sh"
+                    sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
+                    echo "Docker images pushed to repository"
                 }
             }
 
+            if (queueAksDeployment || override) {
+                stage("Queue deploy") {
+                
+                    echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
+
+                    acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
+                        resourceGroupName: 'mscdevops-aks-rg',
+                        containerService: 'mscdevops-aks | AKS',
+                        sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
+                        configFilePaths: '**/frontend/*.yaml',
+                        enableConfigSubstitution: true,
+
+                    // Kubernetes
+                    secretName: 'mscdevops',
+                    secretNamespace: 'default',
+
+                    // Docker Swarm
+                    swarmRemoveContainersFirst: true,
+
+                    // DC/OS Marathon
+                    //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+
+                    containerRegistryCredentials: [
+                        [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
+                }
+            }
         } else {
 
             withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
