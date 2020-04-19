@@ -7,7 +7,7 @@ metadata:
     app: fe-service
     deployment: ${TARGET_ROLE}
 spec:
-  replicas: 1
+  replicas: ${REPLICAS_NO}
   selector:
     matchLabels:
       app: fe-service
