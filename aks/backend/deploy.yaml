@@ -5,7 +5,7 @@ metadata:
   name: ws-service-${TARGET_ROLE}
   labels:
     app: ws-service
-    deployment: -${TARGET_ROLE}
+    deployment: ${TARGET_ROLE}
 spec:
   replicas: ${REPLICAS_NO}
   selector:
