@@ -139,8 +139,8 @@ node {
                 // Navigate to fe-service deployment directory
                 dir('aks/frontend'){
                 // Deploy the service
-                sh "kubectl delete deployment fe-service-${$env.TARGET_ROLE}"
-                sh "kubectl delete services svc-fe-service-${$env.TARGET_ROLE}"
+                sh "kubectl delete deployment fe-service-${env.TARGET_ROLE}"
+                sh "kubectl delete services svc-fe-service-${env.TARGET_ROLE}"
                 }
             }
         }   
