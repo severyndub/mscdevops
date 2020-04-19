@@ -1,13 +1,13 @@
 #!groovy
 
-    def buildImages = false
+    boolean buildImages = false
     def targetEnv = ""
     def deploymentType = ""
-    def clearImages = true
-    def deleteAksDeployment = false
+    boolean clearImages = true
+    boolean cleanAks = false
     def branch = env.GIT_BRANCH?.trim().split('/').last().toLowerCase() //master
     def overrideVersion = params.BUILD_VERSION_OVERRIDE?.trim()
-    def override = false
+    boolean override = false
 
 node {
 
@@ -22,7 +22,7 @@ node {
         targetEnv = params.TARGET_ENV?.trim()
         deploymentType = params.TARGET_ROLE?.trim()
         clearImages = params.CLEAR_IMAGES
-        deleteAksDeployment = params.CLEAN_AKS        
+        cleanAks = params.CLEAN_AKS        
 
         // Check if the build label is set
         if (buildImages) {
@@ -59,13 +59,13 @@ node {
             targetEnv: '${targetEnv}'
             clearImages: '${clearImages}'
             deploymentType: '${deploymentType}'
-            deleteAksDeployment: '${deleteAksDeployment}'
+            cleanAks: '${cleanAks}'
             REPLICAS NO: '$env.REPLICAS_NO'
             TARGET_ROLE: '$env.TARGET_ROLE'
             overrideVersion: '${overrideVersion}'
         """
 
-        if(deleteAksDeployment) {
+        if(cleanAks) {
             withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
                 // Login to azure
                 sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
@@ -84,7 +84,7 @@ node {
             return 0
         }
         
-        if(!deleteAksDeployment && !override){
+        if(!cleanAks && !override){
             stage("Pull Source") {
             //trying to get the hash without checkout gets the hash set in previous build.
                 def checkout = checkout scm
