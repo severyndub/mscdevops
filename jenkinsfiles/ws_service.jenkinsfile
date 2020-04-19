@@ -4,21 +4,18 @@ node {
 
     properties([disableConcurrentBuilds()])
 
-    String branchName = ""
-    String buildLabel = ""
-    String buildVersion = ""
+    String env.BUILD_LABEL = ""
     boolean buildImages = false
     String targetEnv = ""
     String deploymentType = ""
     boolean clearImages = true
     boolean deleteAksDeployment = false
+    String branch = env.GIT_BRANCH_OR_REVISION_SHA?.trim().split('/').last().toLowerCase()
 
     try {
 
-        // is manual build
-        branchName = params.BRANCH?.trim()?.replaceFirst("origin/", "").toLowerCase()
-        buildLabel = params.BUILD_LABEL?.trim()
-        buildVersion = params.BUILD_VERSION?.trim()
+        env.BUILD_VERSION = "1.0.0.${env.BUILD_ID}"
+        env.BUILD_LABEL = params.BUILD_LABEL?.trim()
         buildImages = params.BUILD_IMAGES
         queueAksDeployment = params.QUEUE_DEPLOY
         targetEnv = params.TARGET_ENV?.trim()
@@ -26,51 +23,40 @@ node {
         clearImages = params.CLEAR_IMAGES
         deleteAksDeployment = params.CLEAN_AKS        
 
-        if (!branchName) {
-            error("No branch name was given!")
-        }
 
-        if(branch == 'development')
-        {
-            if(!buildVersion || buildVersion == "")
-            buildVersion = 'blue'
-        }
-        elseif(branchName == 'master'){
-            if(!buildVersion || buildVersion == "")
-            buildVersion = 'green'
-        }
-
-            if (buildImages) {
-                if (!buildLabel) {
-                    error("Build label must be specified!: build label: '${buildLabel}'")
-                }
-                buildLabel = buildLabel + ':' + buildVersion
+        if (buildImages) {
+            if (!env.BUILD_LABEL) {
+                error("Build label must be specified!: build label: ${env.BUILD_LABEL}")
             }
+            env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
+        }
+
+
+        switch(branch){
+            case 'development':
+                env.TARGET_ROLE = 'blue'
+            break
+            case 'master':
+                env.TARGET_ROLE = 'green'
+            break
+            default:
+                echo "branch is not development or master, deploying to BLUE type"
+                env.TARGET_ROLE = 'blue'
+        }
 
         echo """Parameters:
-    branchName: '${branchName}' 
-    buildLabel: '${buildLabel}'
-    buildVersion: '${buildVersion}'
-    queueAksDeployment: '${queueAksDeployment}'
-    buildImages: '${buildImages}'
-    targetEnv: '${targetEnv}'
-    clearImages: '${clearImages}'
-    deploymentType: '${deploymentType}'
-    deleteAksDeployment: '${deleteAksDeployment}'
-"""
-
-    switch(branch){
-        case 'development':
-            buildLabel = 'blue'
-        break
-        case 'master':
-            buildLabel = 'green'
-        break
-        default:
-            echo "branch is not development or master, deploying to BLUE type"
-            buildLabel = 'blue'
-        }
-    }
+            branch: '${branch}' 
+            BUILD LABEL: '$env.BUILD_LABEL'
+            BUILD VERSION: '$env.BUILD_VERSION'
+            queueAksDeployment: '${queueAksDeployment}'
+            buildImages: '${buildImages}'
+            targetEnv: '${targetEnv}'
+            clearImages: '${clearImages}'
+            deploymentType: '${deploymentType}'
+            deleteAksDeployment: '${deleteAksDeployment}'
+            REPLICAS NO: '$env.REPLICAS_NO'
+            TARGET_ROLE: '$env.TARGET_ROLE'
+        """
 
     if(!deleteAksDeployment){
         stage("Pull Source") {
@@ -100,18 +86,18 @@ node {
 
             stage("Build Images") {
                 dir('wsservice') {
-                    echo "setting version: BUILD_LABEL='$env.BUILD_LABEL'; COMMIT_HASH='$env.COMMIT_HASH'"
+                    echo "setting version: BUILD_LABEL='${env.BUILD_LABEL}'; COMMIT_HASH='${env.COMMIT_HASH}'"
 
-                    sh "docker build -f Dockerfile-hollow -t ${buildLabel} ."
+                    sh "docker build -f Dockerfile-hollow -t ${env.BUILD_LABEL} ."
 
-                    echo "Docker containers built with tag '${buildLabel}'"
-                    sh "docker images ${buildLabel}"
+                    echo "Docker containers built with tag '${env.BUILD_LABEL}'"
+                    sh "docker images ${env.BUILD_LABEL}"
                 }
             }
 
             stage("Push Images") {
                 sh "chmod +x ./push_images.sh"
-                sh "./push_images.sh ${env.BUILD_LABEL} ${buildVersion}"
+                sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
                 echo "Docker images pushed to repository"
             }
     }
@@ -119,7 +105,7 @@ node {
     if (queueAksDeployment && !deleteAksDeployment) {
             stage("Queue deploy") {
 
-                echo "Queueing Deploy job (${targetEnv}, ${buildLabel})."
+                echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
 
                 acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
                     resourceGroupName: 'mscdevops-aks-rg',
@@ -168,8 +154,8 @@ node {
     } finally {
         if (buildImages && clearImages) {
             stage("Clear Images") {
-                echo "Removing images with tag '${buildLabel}'"
-                sh "docker images ${buildLabel}"
+                echo "Removing images with tag '${env.BUILD_LABEL}'"
+                sh "docker images ${env.BUILD_LABEL}"
                 sh "docker rmi -f \$(docker images | grep '${env.BUILD_LABEL}' | awk '{print \$3}')"
             }
         }
