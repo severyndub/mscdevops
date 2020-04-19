@@ -28,7 +28,7 @@ node {
             if (!env.BUILD_LABEL) {
                 error("Build label must be specified!: build label: ${env.BUILD_LABEL}")
             }
-        }else if (!overrideVersion != "") {
+        }else if (overrideVersion != "") {
             env.BUILD_VERSION = overrideVersion
             buildImages = false
         }
