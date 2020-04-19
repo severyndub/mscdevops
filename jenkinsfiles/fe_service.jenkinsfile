@@ -5,7 +5,7 @@
     def deploymentType = ""
     def clearImages = true
     def deleteAksDeployment = false
-    def branch = env.BRANCH?.trim().split('/').last().toLowerCase() //master
+    def branch = env.BRANCH_NAME?.trim().split('/').last().toLowerCase() //master
     def overrideVersion = params.BUILD_VERSION_OVERRIDE?.trim()
 
 node {
