@@ -28,7 +28,7 @@ node {
             if (!env.BUILD_LABEL) {
                 error("Build label must be specified!: build label: ${env.BUILD_LABEL}")
             }
-        }else if (overrideVersion != "") {
+        }else if (overrideVersion != "1.0.0.0") {
             env.BUILD_VERSION = overrideVersion
             buildImages = false
         }
@@ -68,14 +68,11 @@ node {
                 def checkout = checkout scm
                 env.COMMIT_HASH = checkout.GIT_COMMIT
                 echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
-            }
-
             stage('Checkout frontend service') {
                 dir('feservice') {
                     git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
                 }
             }
-
             //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
             stage("Install npm dependencies") {
                 dir('feservice') {
@@ -85,56 +82,50 @@ node {
                 }
                 echo "dependencies install completed"
             }
-
             if (buildImages) {
-
                 stage("Build Images") {
                     dir('feservice') {
                         echo "setting version: BUILD_LABEL='${env.BUILD_LABEL}'; COMMIT_HASH='${env.COMMIT_HASH}'"
-
                         sh "docker build -t '${env.BUILD_LABEL}' ."
-
                         echo "Docker containers built with tag '${env.BUILD_LABEL}'"
                         sh "docker images ${env.BUILD_LABEL}"
                     }
                 }
             }
-
             stage("Push Images") {
-                    sh "chmod +x ./push_images.sh"
-                    sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
-                    echo "Docker images pushed to repository"
-                }
+                sh "chmod +x ./push_images.sh"
+                sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
+                echo "Docker images pushed to repository"
+            }
+            if (queueAksDeployment) {
+                    stage("Queue deploy") {
+                    
+                        echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
     
-        if (queueAksDeployment && !deleteAksDeployment) {
-                stage("Queue deploy") {
-
-                    echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
-
-                    acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
-                        resourceGroupName: 'mscdevops-aks-rg',
-                        containerService: 'mscdevops-aks | AKS',
-                        sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
-                        configFilePaths: '**/frontend/*.yaml',
-                        enableConfigSubstitution: true,
-
-                    // Kubernetes
-                    secretName: 'mscdevops',
-                    secretNamespace: 'default',
-
-                    // Docker Swarm
-                    swarmRemoveContainersFirst: true,
-
-                    // DC/OS Marathon
-                    //dcosDockerCredentialsPath: '<dcos-credentials-path>',
-
-                    containerRegistryCredentials: [
-                        [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
+                        acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
+                            resourceGroupName: 'mscdevops-aks-rg',
+                            containerService: 'mscdevops-aks | AKS',
+                            sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
+                            configFilePaths: '**/frontend/*.yaml',
+                            enableConfigSubstitution: true,
+    
+                        // Kubernetes
+                        secretName: 'mscdevops',
+                        secretNamespace: 'default',
+    
+                        // Docker Swarm
+                        swarmRemoveContainersFirst: true,
+    
+                        // DC/OS Marathon
+                        //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+    
+                        containerRegistryCredentials: [
+                            [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
+                    }
                 }
             }
-        }
 
-        if(deleteAksDeployment){
+        } else {
 
             withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
                 // Login to azure
@@ -143,7 +134,6 @@ node {
                 sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
                 // Set aks context
                 sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
-
                 // Navigate to fe-service deployment directory
                 dir('aks/frontend'){
                 // Deploy the service
@@ -151,8 +141,7 @@ node {
                 sh "kubectl delete services svc-fe-service-${deploymentType}"
                 }
             }
-        }
-
+        }   
     } catch (e) {
         throw e
     } finally {
