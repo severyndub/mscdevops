@@ -35,7 +35,7 @@ node {
             override = true
         }
 
-        env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
+        //env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
 
         switch(branch){
             case 'development':
@@ -88,14 +88,14 @@ node {
                 stage("Build Images") {
                     dir('feservice') {
                         echo "setting version: BUILD_LABEL='${env.BUILD_LABEL}'; COMMIT_HASH='${env.COMMIT_HASH}'"
-                        sh "docker build -t '${env.BUILD_LABEL}' ."
-                        echo "Docker containers built with tag '${env.BUILD_LABEL}'"
-                        sh "docker images ${env.BUILD_LABEL}"
+                        sh "docker build -t '${env.BUILD_LABEL}:${env.BUILD_VERSION}' ."
+                        echo "Docker containers built with tag '${env.BUILD_LABEL}:${env.BUILD_VERSION}'"
+                        sh "docker images ${env.BUILD_LABEL}:${env.BUILD_VERSION}"
                     }
                 }
                 stage("Push Images") {
                     sh "chmod +x ./push_images.sh"
-                    sh "./push_images.sh ${env.BUILD_LABEL}"
+                    sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
                     echo "Docker images pushed to repository"
                 }
             }
