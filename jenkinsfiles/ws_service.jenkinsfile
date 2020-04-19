@@ -84,14 +84,14 @@ node {
             return 0
         }
         
-        if(!cleanAks && !override){
-            stage("Pull Source") {
-            //trying to get the hash without checkout gets the hash set in previous build.
-                def checkout = checkout scm
-                env.COMMIT_HASH = checkout.GIT_COMMIT
-                echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
-            }
+        stage("Pull Source") {
+        //trying to get the hash without checkout gets the hash set in previous build.
+            def checkout = checkout scm
+            env.COMMIT_HASH = checkout.GIT_COMMIT
+            echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+        }
 
+        if(!cleanAks && !override){
             stage('Checkout frontend service') {
                 dir('wsservice') {
                     git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_WS/_git/EAD_CA1_WS'
