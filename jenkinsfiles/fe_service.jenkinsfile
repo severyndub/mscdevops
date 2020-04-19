@@ -15,7 +15,7 @@ node {
     try {
 
 
-echo "gitbranch: ${env.GIT_BRANCH}; gitbranch or rev: ${env.GIT_BRANCH_OR_REVISION_SHA}; branch name: ${BRANCH_NAME }"
+echo "gitbranch: ${env.GIT_BRANCH}; gitbranch or rev: ${env.GIT_BRANCH_OR_REVISION_SHA}; branch name: ${env.BRANCH_NAME }"
 
 error("return here, end of test")
 
