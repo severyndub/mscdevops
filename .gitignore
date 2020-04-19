@@ -2,3 +2,4 @@
 services/ead_ca1_fe/node_modules
 services/ead_ca1_fe/npm-debug.log
 services/ead_ca1_fe/target
+mscdevops_workspace.code-workspace

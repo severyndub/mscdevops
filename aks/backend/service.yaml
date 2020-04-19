@@ -2,16 +2,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-ws-service
+  name: svc-ws-service-${TARGET_ROLE}
 spec:
   type: LoadBalancer
   ports:
     - name: http
       port: 80
+      protocol: TCP
       targetPort: 80  
   selector:
     app: ws-service
-    deployment: blue
+    deployment: ${TARGET_ROLE}
 # When deploying a new version, you can label it deployment: green. 
 # It won’t receive any traffic, even when it’s fully up and running, 
 # because the Service only sends traffic to blue Pods. 
@@ -19,12 +20,3 @@ spec:
 # To switch over to the new Deployment, edit the Service to change the selector to
 # deployment: green. Now the new green Pods will start receiving traffic, and once all
 # the old blue Pods are idle, you can shut them down (or keep them running for easy rollback).
-
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#  name: mongo
-# spec:
-#  type: ExternalName
-#  externalName: cluster0-9g35k.azure.mongodb.net

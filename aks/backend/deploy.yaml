@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ws-service
+  name: ws-service-${TARGET_ROLE}
   labels:
     app: ws-service
-    deployment: blue
+    deployment: -${TARGET_ROLE}
 spec:
-  replicas: 1
+  replicas: ${REPLICAS_NO}
   selector:
     matchLabels:
       app: ws-service
-      deployment: blue
+      deployment: ${TARGET_ROLE}
   template:
     metadata:
       labels:
         app: ws-service
-        deployment: blue
+        deployment: ${TARGET_ROLE}
     spec:
       containers:
       - name: ws-service
-        image: mcsdevopsentarch.azurecr.io/ws-service:latest
+        image: mcsdevopsentarch.azurecr.io/ws-service:${BUILD_VERSION}
         resources:
           requests:
             cpu: 500m
