@@ -126,6 +126,7 @@ node {
                         [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
                 }
             }
+            }
         } else {
 
             withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
