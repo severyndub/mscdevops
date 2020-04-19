@@ -46,7 +46,6 @@ node {
             default:
                 echo "branch is not development or master, deploying to BLUE type"
                 env.TARGET_ROLE = 'blue'
-            }
         }
 
         echo """Parameters:
