@@ -59,6 +59,7 @@ node {
             deleteAksDeployment: '${deleteAksDeployment}'
             REPLICAS NO: '$env.REPLICAS_NO'
             TARGET_ROLE: '$env.TARGET_ROLE'
+            overrideVersion: '${overrideVersion}'
         """
 
         if(!deleteAksDeployment){
