@@ -1,9 +1,5 @@
 #!groovy
 
-node {
-
-    properties([disableConcurrentBuilds()])
-
     def env.BUILD_LABEL = ""
     def buildImages = false
     def targetEnv = ""
@@ -11,6 +7,10 @@ node {
     def clearImages = true
     def deleteAksDeployment = false
     def branch = env.GIT_BRANCH_OR_REVISION_SHA?.trim().split('/').last().toLowerCase()
+
+node {
+
+    properties([disableConcurrentBuilds()])
 
     try {
 
