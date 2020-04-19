@@ -6,7 +6,7 @@
     def clearImages = true
     def deleteAksDeployment = false
     def branch = params.BRANCH?.trim().split('/').last().toLowerCase() //master
-    //def branch = env.GIT_BRANCH_OR_REVISION_SHA?.trim().split('/').last().toLowerCase()
+    def overrideVersion = params.BUILD_VERSION_OVERRIDE?.trim()
 
 node {
 
@@ -28,9 +28,12 @@ node {
             if (!env.BUILD_LABEL) {
                 error("Build label must be specified!: build label: ${env.BUILD_LABEL}")
             }
-            env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
+        }else if (!overrideVersion != "") {
+            env.BUILD_VERSION = overrideVersion
+            buildImages = false
         }
 
+        env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
 
         switch(branch){
             case 'development':
@@ -94,13 +97,13 @@ node {
                         sh "docker images ${env.BUILD_LABEL}"
                     }
                 }
+            }
 
-                stage("Push Images") {
+            stage("Push Images") {
                     sh "chmod +x ./push_images.sh"
                     sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
                     echo "Docker images pushed to repository"
                 }
-        }
     
         if (queueAksDeployment && !deleteAksDeployment) {
                 stage("Queue deploy") {
