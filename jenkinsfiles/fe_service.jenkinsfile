@@ -1,6 +1,5 @@
 #!groovy
 
-    def env.BUILD_LABEL = ""
     def buildImages = false
     def targetEnv = ""
     def deploymentType = ""
