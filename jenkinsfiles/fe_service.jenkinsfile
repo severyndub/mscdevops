@@ -4,13 +4,13 @@ node {
 
     properties([disableConcurrentBuilds()])
 
-    String env.BUILD_LABEL = ""
-    boolean buildImages = false
-    String targetEnv = ""
-    String deploymentType = ""
-    boolean clearImages = true
-    boolean deleteAksDeployment = false
-    String branch = env.GIT_BRANCH_OR_REVISION_SHA?.trim().split('/').last().toLowerCase()
+    def env.BUILD_LABEL = ""
+    def buildImages = false
+    def targetEnv = ""
+    def deploymentType = ""
+    def clearImages = true
+    def deleteAksDeployment = false
+    def branch = env.GIT_BRANCH_OR_REVISION_SHA?.trim().split('/').last().toLowerCase()
 
     try {
 
