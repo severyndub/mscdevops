@@ -127,6 +127,7 @@ node {
             //dcosDockerCredentialsPath: '<dcos-credentials-path>',
             containerRegistryCredentials: [
                 [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
+                }
             }
         } else {
 
