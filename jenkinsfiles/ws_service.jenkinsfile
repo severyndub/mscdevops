@@ -1,16 +1,17 @@
 #!groovy
 
+    def buildImages = false
+    def targetEnv = ""
+    def deploymentType = ""
+    def clearImages = true
+    def deleteAksDeployment = false
+    def branch = env.GIT_BRANCH?.trim().split('/').last().toLowerCase() //master
+    def overrideVersion = params.BUILD_VERSION_OVERRIDE?.trim()
+    def override = false
+
 node {
 
     properties([disableConcurrentBuilds()])
-
-    String env.BUILD_LABEL = ""
-    boolean buildImages = false
-    String targetEnv = ""
-    String deploymentType = ""
-    boolean clearImages = true
-    boolean deleteAksDeployment = false
-    String branch = env.GIT_BRANCH_OR_REVISION_SHA?.trim().split('/').last().toLowerCase()
 
     try {
 
@@ -28,9 +29,13 @@ node {
             if (!env.BUILD_LABEL) {
                 error("Build label must be specified!: build label: ${env.BUILD_LABEL}")
             }
-            env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
+        }else if (overrideVersion != "1.0.0.0") {    
+            env.BUILD_VERSION = overrideVersion
+            buildImages = false
+            override = true
         }
 
+        //env.BUILD_LABEL = env.BUILD_LABEL + ':' + env.BUILD_VERSION
 
         switch(branch){
             case 'development':
@@ -56,9 +61,10 @@ node {
             deleteAksDeployment: '${deleteAksDeployment}'
             REPLICAS NO: '$env.REPLICAS_NO'
             TARGET_ROLE: '$env.TARGET_ROLE'
+            overrideVersion: '${overrideVersion}'
         """
 
-    if(!deleteAksDeployment){
+        if(!deleteAksDeployment && !override){
         stage("Pull Source") {
         //trying to get the hash without checkout gets the hash set in previous build.
             def checkout = checkout scm
@@ -88,10 +94,10 @@ node {
                 dir('wsservice') {
                     echo "setting version: BUILD_LABEL='${env.BUILD_LABEL}'; COMMIT_HASH='${env.COMMIT_HASH}'"
 
-                    sh "docker build -f Dockerfile-hollow -t ${env.BUILD_LABEL} ."
+                    sh "docker build -f Dockerfile-hollow -t ${env.BUILD_LABEL}:${env.BUILD_VERSION} ."
 
-                    echo "Docker containers built with tag '${env.BUILD_LABEL}'"
-                    sh "docker images ${env.BUILD_LABEL}"
+                    echo "Docker containers built with tag '${env.BUILD_LABEL}:${env.BUILD_VERSION}'"
+                    sh "docker images ${env.BUILD_LABEL}:${env.BUILD_VERSION}"
                 }
             }
 
@@ -102,10 +108,10 @@ node {
             }
     }
 
-    if (queueAksDeployment && !deleteAksDeployment) {
-            stage("Queue deploy") {
-
-                echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
+            if (queueAksDeployment || override) {
+                stage("Queue deploy") {
+                
+                    echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
 
                 acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
                     resourceGroupName: 'mscdevops-aks-rg',
@@ -129,8 +135,8 @@ node {
             }
         }
     }                   
+        } else {
 
-    if(deleteAksDeployment){
         
         withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
             // Login to azure
@@ -143,8 +149,8 @@ node {
             // Navigate to fe-service deployment directory
             dir('aks/frontend'){
             // Deploy the service
-            sh "kubectl delete deployment fe-service-${deploymentType}"
-            sh "kubectl delete services svc-fe-service-${deploymentType}"
+            sh "kubectl delete deployment fe-service-${env.TARGET_ROLE}"
+            sh "kubectl delete services svc-fe-service-${env.TARGET_ROLE}"
             }
         }
     }

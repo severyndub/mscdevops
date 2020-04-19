@@ -70,6 +70,7 @@ node {
                 def checkout = checkout scm
                 env.COMMIT_HASH = checkout.GIT_COMMIT
                 echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+            }
             stage('Checkout frontend service') {
                 dir('feservice') {
                     git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
@@ -125,7 +126,6 @@ node {
                     containerRegistryCredentials: [
                         [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
                 }
-            }
             }
         } else {
 
