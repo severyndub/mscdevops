@@ -65,11 +65,11 @@ node {
         """
 
         if(!deleteAksDeployment && !override){
-        stage("Pull Source") {
-        //trying to get the hash without checkout gets the hash set in previous build.
-            def checkout = checkout scm
-            env.COMMIT_HASH = checkout.GIT_COMMIT
-            echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+            stage("Pull Source") {
+            //trying to get the hash without checkout gets the hash set in previous build.
+                def checkout = checkout scm
+                env.COMMIT_HASH = checkout.GIT_COMMIT
+                echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
         }
 
         stage('Checkout frontend service') {
@@ -106,54 +106,48 @@ node {
                 sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
                 echo "Docker images pushed to repository"
             }
-    }
+        }
 
-            if (queueAksDeployment || override) {
-                stage("Queue deploy") {
-                
-                    echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
-
-                acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
-                    resourceGroupName: 'mscdevops-aks-rg',
-                    containerService: 'mscdevops-aks | AKS',
-                    sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
-                    configFilePaths: '**/backend/*.yaml',
-                    enableConfigSubstitution: true,
-
-                // Kubernetes
-                secretName: 'mscdevops',
-                secretNamespace: 'default',
-
-                // Docker Swarm
-                swarmRemoveContainersFirst: true,
-
-                // DC/OS Marathon
-                //dcosDockerCredentialsPath: '<dcos-credentials-path>',
-
-                containerRegistryCredentials: [
-                    [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
+        if (queueAksDeployment || override) {
+            stage("Queue deploy") {
+            
+            echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
+            acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
+                resourceGroupName: 'mscdevops-aks-rg',
+                containerService: 'mscdevops-aks | AKS',
+                sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
+                configFilePaths: '**/backend/*.yaml',
+                enableConfigSubstitution: true,
+            // Kubernetes
+            secretName: 'mscdevops',
+            secretNamespace: 'default',
+            // Docker Swarm
+            swarmRemoveContainersFirst: true,
+            // DC/OS Marathon
+            //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+            containerRegistryCredentials: [
+                [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
             }
         }
-    }                   
+                      
         } else {
 
-        
-        withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
-            // Login to azure
-            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-            // Set subscription context
-            sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-            // Set aks context
-            sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
+            withCredentials([azureServicePrincipal('72555f61-7a9f-4145-8bb7-a163f107bccf')]) {
+                // Login to azure
+                sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                // Set subscription context
+                sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                // Set aks context
+                sh 'az aks get-credentials --overwrite-existing --resource-group \"mscdevops-aks-rg\" --name \"mscdevops-aks\"'
 
-            // Navigate to fe-service deployment directory
-            dir('aks/frontend'){
-            // Deploy the service
-            sh "kubectl delete deployment fe-service-${env.TARGET_ROLE}"
-            sh "kubectl delete services svc-fe-service-${env.TARGET_ROLE}"
+                // Navigate to fe-service deployment directory
+                dir('aks/frontend'){
+                // Deploy the service
+                sh "kubectl delete deployment fe-service-${env.TARGET_ROLE}"
+                sh "kubectl delete services svc-fe-service-${env.TARGET_ROLE}"
+                }
             }
         }
-    }
 
     } catch (e) {
         throw e
