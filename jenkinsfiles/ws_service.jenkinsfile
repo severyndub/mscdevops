@@ -40,13 +40,16 @@ node {
         switch(branch){
             case 'development':
                 env.TARGET_ROLE = 'blue'
+                env.TARGET_PORT = '8080'
             break
             case 'master':
                 env.TARGET_ROLE = 'green'
+                env.TARGET_PORT = '80'
             break
             default:
-                echo "branch is not development or master, deploying to BLUE type"
+                echo "branch is neither development or master, deploying to BLUE type"
                 env.TARGET_ROLE = 'blue'
+                env.TARGET_PORT = "${TARGET_PORT_MAN}"
         }
 
         echo """Parameters:
@@ -107,7 +110,6 @@ node {
             }
 
             if (buildImages) {
-
                 stage("Build Images") {
                     dir('wsservice') {
                         echo "setting version: BUILD_LABEL='${env.BUILD_LABEL}'; COMMIT_HASH='${env.COMMIT_HASH}'"
@@ -129,22 +131,32 @@ node {
         }
 
         stage("Queue deploy") {
+
             echo "Queueing Deploy job (${targetEnv}, ${env.BUILD_LABEL})."
+
             acsDeploy(azureCredentialsId: '72555f61-7a9f-4145-8bb7-a163f107bccf',
                 resourceGroupName: 'mscdevops-aks-rg',
                 containerService: 'mscdevops-aks | AKS',
                 sshCredentialsId: '491fabd9-2952-4e79-9192-66b52c9dd389',
                 configFilePaths: '**/backend/*.yaml',
                 enableConfigSubstitution: true,
+
                 // Kubernetes
                 secretName: 'mscdevops',
                 secretNamespace: 'default',
+
                 // Docker Swarm
                 swarmRemoveContainersFirst: true,
+
                 // DC/OS Marathon
                 //dcosDockerCredentialsPath: '<dcos-credentials-path>',
+
             containerRegistryCredentials: [
                 [credentialsId: 'dockerRegAccess', url: 'mcsdevopsentarch.azurecr.io'] ])
+        }
+
+        stage("Get container public ip"){
+            sh "kubectl describe services svc-ws-service-${env.TARGET_ROLE} | grep 'LoadBalancer Ingress:' | awk '{printf \"%s\\n\", \$3}'"
         }
 
     } catch (e) {

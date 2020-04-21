@@ -27,8 +27,8 @@
   include_tasks: "{{ item }}"
   with_items:
     - "vnet.yaml"
-    - "pip.yaml"
-    - "lb.yaml"
+    #- "pip.yaml"
+    #- "lb.yaml"
   tags:
     - createVnet
     - deleteVnet

@@ -7,12 +7,13 @@ spec:
   type: LoadBalancer
   ports:
     - name: http
-      port: 80
+      port: ${TARGET_PORT}
       protocol: TCP
-      targetPort: 80  
+      targetPort: ${SERVICE_PORT}
   selector:
     app: ws-service
     deployment: ${TARGET_ROLE}
+
 # When deploying a new version, you can label it deployment: green. 
 # It won’t receive any traffic, even when it’s fully up and running, 
 # because the Service only sends traffic to blue Pods. 

@@ -92,12 +92,14 @@ node {
                 env.COMMIT_HASH = checkout.GIT_COMMIT
                 echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
             }
+
         if(!cleanAks && !override){
             stage('Checkout frontend service') {
                 dir('feservice') {
                     git "${env.SERVICE_URL}"
                 }
             }
+
             //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
             stage("Install npm dependencies") {
                 dir('feservice') {
@@ -105,8 +107,10 @@ node {
                     echo "List audit vulnerabilities:"
                     //sh "npm audit"
                 }
+
                 echo "dependencies install completed"
             }
+            
             if (buildImages) {
                 stage("Build Images") {
                     dir('feservice') {
@@ -116,6 +120,7 @@ node {
                         sh "docker images ${env.BUILD_LABEL}:${env.BUILD_VERSION}"
                     }
                 }
+                
                 stage("Push Images") {
                     sh "chmod +x ./push_images.sh"
                     sh "./push_images.sh ${env.BUILD_LABEL} ${env.BUILD_VERSION}"
