@@ -14,7 +14,7 @@ node {
 
         stage("Run ansible"){
             // Run ansible to create resource groups
-            sh "ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --vault-password-file ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3'"
+            sh "ansible-playbook ansible/nsgautomation/updateSecurityRules.yaml --vault-password-file ~/ansible_vault -e 'ansible_python_interpreter=/usr/bin/python3'"
         }
 
     } catch (e) {
