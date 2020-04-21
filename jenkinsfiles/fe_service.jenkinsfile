@@ -64,6 +64,7 @@ node {
             REPLICAS NO: '$env.REPLICAS_NO'
             TARGET_ROLE: '$env.TARGET_ROLE'
             overrideVersion: '${overrideVersion}'
+            TARGET PORT: '${env.TARGET_PORT}'
         """
 
         if(cleanAks) {
