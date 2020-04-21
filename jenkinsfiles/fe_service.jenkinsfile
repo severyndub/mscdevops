@@ -151,7 +151,7 @@ node {
         }
 
         stage("Get container public ip"){
-            sh "kubectl describe services svc-fe-service-green | grep 'LoadBalancer Ingress:' | awk '{printf \"%s\\n\", \$3}'"
+            sh "kubectl describe services svc-fe-service-${env.TARGET_ROLE} | grep 'LoadBalancer Ingress:' | awk '{printf \"%s\\n\", \$3}'"
         }
 
     } catch (e) {
