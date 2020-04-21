@@ -40,13 +40,16 @@ node {
         switch(branch){
             case 'development':
                 env.TARGET_ROLE = 'blue'
+                env.TARGET_PORT = '8080'
             break
             case 'master':
                 env.TARGET_ROLE = 'green'
+                env.TARGET_PORT = '80'
             break
             default:
-                echo "branch is not development or master, deploying to BLUE type"
+                echo "branch is neither development or master, deploying to BLUE type"
                 env.TARGET_ROLE = 'blue'
+                env.TARGET_PORT = '8090'
         }
 
         echo """Parameters:
