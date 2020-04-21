@@ -64,6 +64,7 @@ node {
             REPLICAS NO: '$env.REPLICAS_NO'
             TARGET_ROLE: '$env.TARGET_ROLE'
             overrideVersion: '${overrideVersion}'
+            TARGET PORT: '${env.TARGET_PORT}'
         """
 
         if(cleanAks) {
@@ -95,7 +96,7 @@ node {
         if(!cleanAks && !override){
             stage('Checkout frontend service') {
                 dir('wsservice') {
-                    git "${env.SERVICE_BRANCH}"
+                    git "${env.SERVICE_URL}"
                 }
             }
 
@@ -156,7 +157,8 @@ node {
         }
 
         stage("Get container public ip"){
-            sh "kubectl describe services svc-ws-service-${env.TARGET_ROLE} | grep 'LoadBalancer Ingress:' | awk '{printf \"%s\\n\", \$3}'"
+            //sh "kubectl describe services svc-ws-service-${env.TARGET_ROLE} | grep 'LoadBalancer Ingress:' | awk '{printf \"%s\\n\", \$3}'"
+            sh "kubectl get service svc-ws-service-${env.TARGET_ROLE} | awk '{printf \"%s\\n\", \$4}'"
         }
 
     } catch (e) {
