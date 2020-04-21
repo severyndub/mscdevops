@@ -9,7 +9,7 @@ spec:
     - name: http
       port: ${TARGET_PORT}
       protocol: TCP
-      targetPort: 22137
+      targetPort: ${SERVICE_PORT}
   selector:
     app: fe-service
     deployment: ${TARGET_ROLE}
