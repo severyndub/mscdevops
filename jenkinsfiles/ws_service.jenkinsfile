@@ -92,7 +92,7 @@ node {
         if(!cleanAks && !override){
             stage('Checkout frontend service') {
                 dir('wsservice') {
-                    git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_WS/_git/EAD_CA1_WS'
+                    git "${env.SERVICE_BRANCH}"
                 }
             }
 

@@ -91,7 +91,7 @@ node {
         if(!cleanAks && !override){
             stage('Checkout frontend service') {
                 dir('feservice') {
-                    git 'https://KarenANolan@dev.azure.com/KarenANolan/EAD_CA1_FE/_git/EAD_CA1_FE'
+                    git "${env.SERVICE_URL}"
                 }
             }
             //This will use the content of the package.json file and install any needed dependencies into /node-modules folder
