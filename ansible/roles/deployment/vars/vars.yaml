@@ -1,4 +1,0 @@
----
-kubectl: "/usr/local/bin/kubectl"
-aksPath: "{{ playbook_dir }}/../aks/"
-az_sub: "ca074c37-010e-47b0-8c98-ae7ce2f1964f"
