@@ -7,9 +7,9 @@ spec:
   type: LoadBalancer
   ports:
     - name: http
-      port: 80
+      port: ${TARGET_PORT}
       protocol: TCP
-      targetPort: ${TARGET_PORT}
+      targetPort: ${SERVICE_PORT}
   selector:
     app: fe-service
     deployment: ${TARGET_ROLE}
