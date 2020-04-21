@@ -49,7 +49,7 @@ node {
             default:
                 echo "branch is neither development or master, deploying to BLUE type"
                 env.TARGET_ROLE = 'blue'
-                env.TARGET_PORT = '8090'
+                env.TARGET_PORT = "${TARGET_PORT_MAN}"
         }
 
         echo """Parameters:
