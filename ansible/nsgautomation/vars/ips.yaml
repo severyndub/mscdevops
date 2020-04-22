@@ -10,5 +10,6 @@ gitHubWebHookAccess:
   - 192.30.252.0/22
   - 185.199.108.0/22
   - 140.82.112.0/20
+  - 140.82.115.0/20
 
 allowedIps: "{{ personalIP + gitHubWebHookAccess }}"
