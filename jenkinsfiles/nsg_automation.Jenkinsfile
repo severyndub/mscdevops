@@ -18,7 +18,7 @@ node {
                 branches: [[name: 'master']],
                 userRemoteConfigs: [[
                     url: 'https://github.com/severyndub/mscdevops.git',
-                    credentialsId: '4a10f3a2-e6c6-466f-8b74-b1fd2621a3dc',
+                    credentialsId: 'github-token',
                 ]]
             ])
         }
