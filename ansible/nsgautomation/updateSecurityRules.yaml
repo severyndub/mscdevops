@@ -76,7 +76,7 @@
           priority: 110
           direction: Inbound
     with_items:
-    - { ips: "{{ allowedIPs }}" }
+    - { ips: "{{ allowedIps }}" }
 
   - name: Update SSH Access
     azure_rm_securitygroup:
