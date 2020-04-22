@@ -1,15 +1,27 @@
 #!groovy
 
+properties([pipelineTriggers([githubPush()])])
+
 node {
 
     properties([disableConcurrentBuilds()])
 
     try {
         stage("Pull Source") {
-        //trying to get the hash without checkout gets the hash set in previous build.
+            //trying to get the hash without checkout gets the hash set in previous build.
             def checkout = checkout scm
-            env.COMMIT_HASH = checkout.GIT_COMMIT
-            echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+            // env.COMMIT_HASH = checkout.GIT_COMMIT
+            // echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
+            echo checkout.GIT_COMMIT
+
+            checkout([
+                $class: 'GitSCM',
+                branches: [[name: 'master']],
+                userRemoteConfigs: [[
+                    url: 'https://github.com/severyndub/mscdevops.git',
+                    credentialsId: '4a10f3a2-e6c6-466f-8b74-b1fd2621a3dc',
+                ]]
+            ])
         }
 
         stage("Run ansible"){
