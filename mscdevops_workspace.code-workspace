@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "..\\mscdevops_ead_ca1_fe"
+		},
+		{
+			"path": "..\\mscdevops_ead_ca1_ws"
 		}
 	],
 	"settings": {}
