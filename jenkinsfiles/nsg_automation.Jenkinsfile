@@ -13,6 +13,7 @@ node {
             // env.COMMIT_HASH = checkout.GIT_COMMIT
             // echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
             echo "checkout url: ${checkout.GIT_COMMIT}"
+            //test
 
             checkout([
                 $class: 'GitSCM',
