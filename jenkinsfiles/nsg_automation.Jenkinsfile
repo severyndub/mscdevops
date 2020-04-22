@@ -1,9 +1,8 @@
 #!groovy
 
-properties([pipelineTriggers([githubPush()])])
-
 node {
 
+    properties([pipelineTriggers([githubPush()])])
     properties([disableConcurrentBuilds()])
 
     try {
