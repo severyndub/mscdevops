@@ -12,7 +12,7 @@ node {
             def checkout = checkout scm
             // env.COMMIT_HASH = checkout.GIT_COMMIT
             // echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
-            echo checkout.GIT_COMMIT
+            echo "checkout url: ${checkout.GIT_COMMIT}"
 
             checkout([
                 $class: 'GitSCM',
