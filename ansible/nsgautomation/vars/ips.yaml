@@ -4,7 +4,6 @@ personalIP:
 
 sshDevOpsAccess:
   - 77.252.200.122
-  - 77.122.122.122
 
 gitHubWebHookAccess:
   - 192.30.252.0/22
