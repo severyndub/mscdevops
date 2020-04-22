@@ -9,11 +9,10 @@ node {
     try {
         stage("Pull Source") {
             //trying to get the hash without checkout gets the hash set in previous build.
-            def checkout = checkout scm
+            //def checkout = checkout scm
             // env.COMMIT_HASH = checkout.GIT_COMMIT
             // echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
-            echo "checkout url: ${checkout.GIT_COMMIT}"
-            //test
+            //echo "checkout url: ${checkout.GIT_COMMIT}"
 
             checkout([
                 $class: 'GitSCM',
