@@ -1,7 +1,5 @@
 #!groovy
 
-//properties([pipelineTriggers([githubPush()])])
-
 node {
 
     properties([disableConcurrentBuilds()])
@@ -13,15 +11,6 @@ node {
             env.COMMIT_HASH = checkout.GIT_COMMIT
             echo "Checkout done; Hash: '${env.COMMIT_HASH}'"
             echo "checkout url: ${checkout.GIT_COMMIT}"
-
-            // checkout([
-            //     $class: 'GitSCM',
-            //     branches: [[name: 'master']],
-            //     userRemoteConfigs: [[
-            //         url: 'https://github.com/severyndub/mscdevops.git',
-            //         credentialsId: 'github-token',
-            //     ]]
-            // ])
         }
 
         stage("Run ansible"){
